@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public class BookRepositoryImpl implements BookRepository{
     private List<Book> listOfBooks = new ArrayList<Book>();
-
+    // 1번.기본생성자:도메인 객체에서 정의된 모든 필드 값을 설정한다.
     public BookRepositoryImpl(){
         Book book1 = new Book("ISBN1234","C#교과서",30000);
         book1.setAuthor("박용준");
@@ -28,5 +28,17 @@ public class BookRepositoryImpl implements BookRepository{
         Book book3 = new Book("ISBN1236","어도비 XD CC 2020",25000);
         book3.setAuthor("김두한");
         book3.setDescription("어도비 XD 프로그램을 통해 UI/UX 디자인을 배우고자 하는 예비 디자이너의 눈높이에 맞게 기본적인 도구를 활용한 아이콘 디자인과 웹&앱 페이지 디자인, UI 디자인, 앱디자인에 애니메이션과 인터랙션을 적용한 프로토타이핑을 학습합니다.");
+        book3.setPublisher("길벗");
+        book3.setCategory("IT활용서");
+        book3.setUnitsInStock(1000);
+        book3.setReleaseDate("2019/05/29");
+        listOfBooks.add(book1);
+        listOfBooks.add(book2);
+        listOfBooks.add(book3);
+    }
+    // 2번.도서목록 가져오기 : 저장된 도서 목록의 정보를 가져오는 getAllBookList()메서드를 작성한다.
+    @Override
+    public List<Book> getAllBookList(){
+        return listOfBooks;
     }
 }
