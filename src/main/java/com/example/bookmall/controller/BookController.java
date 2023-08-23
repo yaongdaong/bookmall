@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +16,7 @@ import java.util.List;
 
 // 컨트롤러로 사용할 자바 클래스에 @Controller 선언
 @Controller
+@RequestMapping("/books")
 public class BookController {
     // @AutoWired는 의존 관계에 있는 클래스의 프로퍼티(멤버 변수)에 대해 Setter()메서드를 대신하여 선언하는 애너테이션
     @Autowired
@@ -45,6 +47,20 @@ public class BookController {
         modelAndView.setViewName("books");
 //        4번.ModelAndView 클래스의 modelAndView 인스턴스를 반환
         return modelAndView;
+    }
+
+    // 1.@GetMapping에 설정된 요청 매핑 경로는 URL 템플릿 패턴으로 /{category}를 사용했고, 여기에서 category는 경로변수
+    // @RequestMapping(value="/category", method=RequestMethod.GET) 또는 @ReqeustMapping("/category)와 같다.
+    @GetMapping("/{category}")
+    // 2.@PathVariable("category")를 선언하여 경로변수 category에 대해 매개변수 이름을 bookCategory로 재정의
+    public String requestBooksByCategory(@PathVariable("category")String bookCategory, Model model){
+        // 3.bookService.getBookListByCategory()메서드를 호출하여 매개변수 bookCategory와 일치하는 도서 목록을
+        // 서비스 객체에서 가져와 booksByCategory에 저장
+        List<Book> booksByCategory = bookService.getBookListByCategory(bookCategory);
+        // 4. booksByCategory 값을 모델 속성 bookLsit에 저장
+        model.addAttribute("bookList",booksByCategory);
+        // 5. 뷰 이름인 books로 반환하므로 books.html이 파일이름
+        return "books";
     }
 
 }
