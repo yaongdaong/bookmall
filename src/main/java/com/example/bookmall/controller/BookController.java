@@ -3,15 +3,16 @@ package com.example.bookmall.controller;
 import com.example.bookmall.domain.Book;
 import com.example.bookmall.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 // 컨트롤러는 메서드를 포함하고 있는 일반적인 자바 클래스가 아니라 웹 브라우저에서 들어온 요청을 처리하는 메서드를 포함하고 있는 특정 자바 클래스
 
 // 컨트롤러로 사용할 자바 클래스에 @Controller 선언
@@ -23,7 +24,7 @@ public class BookController {
 //    1.유연성,확장성을 높이기 위해 서비스객체인 BookService로 저장소 객체에 접근
     private BookService bookService;
 //    2.요청매핑 : 사용자의 웹 요청 URL과 클래스 또는 메서드가 매핑되도록 @RequestMapping 설정
-    @RequestMapping(value = "/books",method = RequestMethod.GET)
+    @RequestMapping
 //    3.요청 처리 메서드 requestBookList()는 웹 요청을 처리할 메서드
     public String requestBookList(Model model){
         List<Book> list = bookService.getAllBookList();
@@ -60,6 +61,21 @@ public class BookController {
         // 4. booksByCategory 값을 모델 속성 bookLsit에 저장
         model.addAttribute("bookList",booksByCategory);
         // 5. 뷰 이름인 books로 반환하므로 books.html이 파일이름
+        return "books";
+    }
+
+    @GetMapping("/filter/{bookFilter}")
+    public String requestBooksByFilter(
+            @MatrixVariable(pathVar = "bookFilter") Map<String, List<String>> bookFilter, Model model){
+        Set<Book> booksByFilter = bookService.getBookListByFilter(bookFilter);
+        model.addAttribute("bookList",booksByFilter);
+        return "books";
+    }
+
+    @GetMapping("/book")
+    public String requestBookById(@RequestParam("id")String bookId, Model model){
+        Book bookById = bookService.getBookById(bookId);
+        model.addAttribute("book",bookById);
         return "books";
     }
 

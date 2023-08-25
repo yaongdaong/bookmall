@@ -3,12 +3,12 @@ package com.example.bookmall.repository;
 import com.example.bookmall.domain.Book;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
     private List<Book> listOfBooks = new ArrayList<Book>();
+
     // 1번.기본생성자:도메인 객체에서 정의된 모든 필드 값을 설정한다.
     public BookRepositoryImpl() {
         Book book1 = new Book("ISBN1234", "C#교과서", 30000);
@@ -44,6 +44,7 @@ public class BookRepositoryImpl implements BookRepository {
     public List<Book> getAllBookList() {
         return listOfBooks;
     }
+
     //  getBookListByCategory() 메서드는 웹 요청 URL로 전송된 경로 변수의 값과
     //  도서 목록의 도서 분야(category 필드 값)를 비교하여 일치하는 도서 정보를 저장한 후 이를 반환
     //  1.도서 분야와 일치하는 도서 목록을 가져오는 getBookListByCategory()메서드
@@ -59,5 +60,52 @@ public class BookRepositoryImpl implements BookRepository {
         }
         //  5.매개변수 category와 일치하는 도서 목록을 반환
         return booksByCategory;
+    }
+
+    public Set<Book> getBookListByFilter(Map<String, List<String>> filter) {
+        Set<Book> booksByPublisher = new HashSet<Book>();
+        Set<Book> booksByCategory = new HashSet<Book>();
+        Set<String> booksByFilter = filter.keySet();
+        // 1. 매트릭스 변수 증 publisher를 포함하는 경우에 실행
+        // 전체 도서 목록 중에서 publisher 필드 값과 일치하는 도서를 검색하여 booksByPublisher 객체에 등록
+        if (booksByFilter.contains("publisher")) {
+            for (int j = 0; j < filter.get("publisher").size(); j++) {
+                String publisherName = filter.get("publisher").get(j);
+                for (int i = 0; i < listOfBooks.size(); i++) {
+                    Book book = listOfBooks.get(i);
+                    if (publisherName.equalsIgnoreCase(book.getPublisher()))
+                        booksByPublisher.add(book);
+
+
+                }
+            }
+        }
+        // 2. 매트리스 변수 중 category를 포함하는 경우에 실행
+        // 전체 도서 목록 중 category 값과 일치하는 도서를 검색하여 booksByCategory 객체에 등록
+        if (booksByFilter.contains("category")) {
+            for (int i = 0; i < filter.get("category").size(); i++) {
+                String category = filter.get("category").get(i);
+                List<Book> list = getBookListByCategory(category);
+                booksByCategory.addAll(list);
+            }
+        }
+        // 3. booksByCategory 객체에 등록된 도서와 booksByPublisher에 등록된 도서 목록 중 중복되는 도서만 남기고
+        // 나머지는 삭제한 후 booksByCategory 객체로 반환
+        booksByCategory.retainAll(booksByPublisher);
+        return booksByCategory;
+    }
+
+    public Book getBookById(String bookId) {
+        Book bookInfo = null;
+        for (int i = 0; i < listOfBooks.size(); i++) {
+            Book book = listOfBooks.get(i);
+            if (book != null && book.getBookId() != null && book.getBookId().equals(bookId)) {
+                bookInfo = book;
+                break;
+            }
+        }
+        if (bookInfo == null)
+            throw new IllegalArgumentException("도서ID가 " + bookId + "인 해당 도서를 찾을 수 없습니다.");
+        return bookInfo;
     }
 }
