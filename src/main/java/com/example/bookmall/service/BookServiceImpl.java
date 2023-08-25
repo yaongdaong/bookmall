@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class BookServiceImpl  implements BookService{
+public class BookServiceImpl implements BookService{
     @Autowired
     private BookRepository bookRepository;
 

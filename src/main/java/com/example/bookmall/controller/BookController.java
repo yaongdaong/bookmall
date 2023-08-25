@@ -24,7 +24,7 @@ public class BookController {
 //    1.유연성,확장성을 높이기 위해 서비스객체인 BookService로 저장소 객체에 접근
     private BookService bookService;
 //    2.요청매핑 : 사용자의 웹 요청 URL과 클래스 또는 메서드가 매핑되도록 @RequestMapping 설정
-    @RequestMapping
+    @GetMapping
 //    3.요청 처리 메서드 requestBookList()는 웹 요청을 처리할 메서드
     public String requestBookList(Model model){
         List<Book> list = bookService.getAllBookList();
@@ -76,7 +76,12 @@ public class BookController {
     public String requestBookById(@RequestParam("id")String bookId, Model model){
         Book bookById = bookService.getBookById(bookId);
         model.addAttribute("book",bookById);
-        return "books";
+        return "book";
+    }
+
+    @GetMapping("/add")
+    public String requestAddBookForm(Book book){
+        return "addBook";
     }
 
 }
