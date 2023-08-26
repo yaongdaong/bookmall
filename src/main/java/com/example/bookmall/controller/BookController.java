@@ -1,6 +1,7 @@
 package com.example.bookmall.controller;
 
 import com.example.bookmall.domain.Book;
+import com.example.bookmall.domain.Member;
 import com.example.bookmall.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
@@ -80,7 +81,14 @@ public class BookController {
     }
 
     @GetMapping("/add")
-    public String requestAddBookForm(Book book){
+    public String requestAddBookForm(Model model,Book book){
+        System.out.println("@GetMapping-------------");
+        System.out.println("도서ID: " + book.getBookId());
+        System.out.println("도서명: " + book.getName());
+        System.out.println("가격: " + book.getUnitPrice());
+        System.out.println("저자: " + book.getAuthor());
+        System.out.println("상세정보: " + book.getDescription());
+        model.addAttribute("book",book);
         return "addBook";
     }
 
