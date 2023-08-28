@@ -7,6 +7,16 @@ public class Member {
     private String password;
     private String city;
     private String sex;
+    private String[] hobby ;
+    private Date birth;
+
+
+    public Member(){
+        super();
+    }
+    public int getId(){
+        return id;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -50,16 +60,6 @@ public class Member {
 
     public void setBirth(Date birth) {
         this.birth = birth;
-    }
-
-    private String[] hobby ;
-    private Date birth;
-
-    public Member(){
-        super();
-    }
-    public int getId(){
-        return id;
     }
 
 }

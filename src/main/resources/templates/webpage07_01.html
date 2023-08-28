@@ -8,37 +8,38 @@
 </head>
 <body>
 <h3>회원가입</h3>
-<form:form modelAttribute="member" method="post">
+
+<form th:action="@{/member}" th:object="${member}" method="post">
     <p>아이디 :
-        <input type="text" path="id" name="id"/>
+        <input type="text" th:field="*{id}"/>
     </p>
     <p>비밀번호 :
-        <input type="password" path="password"/>
+        <input type="password" th:field="*{password}"/>
     </p>
     <p>거주지 :
-        <select path="city">
-            <option value="서울시">서울시</option>
-            <option value="경기도">경기도</option>
-            <option value="인천시">인천시</option>
-            <option value="충청도">충청도</option>
-            <option value="전라도">전라도</option>
-            <option value="경상도">경상도</option>
+        <select th:field="${member.city}">
+            <option th:value="서울시">서울시</option>
+            <option th:value="경기도">경기도</option>
+            <option th:value="인천시">인천시</option>
+            <option th:value="충청도">충청도</option>
+            <option th:value="전라도">전라도</option>
+            <option th:value="경상도">경상도</option>
         </select>
     </p>
     <p>성별 :
-        <input type="radio" path="sex" value="남성"/>남성
-        <input type="radio" path="sex" value="여성"/>여성
+        <input type="radio" th:field="*{sex}" th:value="남성"/>남성
+        <input type="radio" th:field="*{sex}" th:value="여성"/>여성
     </p>
     <p>취미 :
-        독서<input type="radio" path="hobby" value="독서"/>
-        운동<input type="radio" path="hobby" value="운동"/>
-        영화<input type="radio" path="hobby" value="영화"/>
+        독서<input type="radio" th:field="*{hobby}" th:value="독서"/>
+        운동<input type="radio" th:field="*{hobby}" th:value="운동"/>
+        영화<input type="radio" th:field="*{hobby}" th:value="영화"/>
     </p>
     <p>
-        <input type="submit" value="가입하기"/>
-        <input type="reset" value="다시쓰기"/>
+        <input type="submit" th:value="가입하기"/>
+        <input type="reset" th:value="다시쓰기"/>
     </p>
-</form:form>
+</form>
 <p th:text="${data}"></p>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"

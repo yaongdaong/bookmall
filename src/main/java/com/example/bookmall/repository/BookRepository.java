@@ -18,4 +18,6 @@ public interface BookRepository {
     Set<Book> getBookListByFilter(Map<String, List<String>> filter);
     // 도서 ID와 일치하는 도서를 검색
     Book getBookById(String bookId);
+    // @ModelAttribute로 도서 등록 페이지에서 입력된 파라미터 값을 커맨드 객체로 바인딩하여 저장소 객체에 신규 도서 정보 저장
+    void setNewBook(Book book);
 }

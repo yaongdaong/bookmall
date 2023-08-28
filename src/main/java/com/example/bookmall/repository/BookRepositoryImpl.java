@@ -109,4 +109,10 @@ public class BookRepositoryImpl implements BookRepository {
         return bookInfo;
     }
 
+    // 신규 도서 정보 저장
+    public void setNewBook(Book book){
+        // 신규 도서 정보를 listOfBooks에 추가로 저장
+        listOfBooks.add(book);
+    }
+
 }
