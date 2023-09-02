@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Security</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<h3>스프링 시큐리티 태그 예제</h3>
+
+<p sec:authorize="hasRole('ROLE_ADMIN')" var="isAdmin" class="nav-item">
+<h3>매니저 권한 화면입니다.</h3>
+</p>
+<div th:if="${isAdmin}"><p>ROLE_MANAGER 권한 로그인 중입니다.</p>
+    <p><a th:href="@{/exam02}">[웹 요청 URL /exam02로 이동하기]</a></p></div>
+<div th:unless="${isAdmin}"><p></p>
+    <p><a th:href="@{/manager/tag}">[웹 요청 URL /manager/tag로 이동하기]</a></p></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>

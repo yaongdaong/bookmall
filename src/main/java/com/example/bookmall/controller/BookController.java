@@ -2,7 +2,10 @@ package com.example.bookmall.controller;
 
 import com.example.bookmall.domain.Book;
 import com.example.bookmall.domain.Member;
+import com.example.bookmall.exception.BookIdException;
+import com.example.bookmall.exception.CategoryException;
 import com.example.bookmall.service.BookService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 
@@ -10,8 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +66,9 @@ public class BookController {
         // 3.bookService.getBookListByCategory()메서드를 호출하여 매개변수 bookCategory와 일치하는 도서 목록을
         // 서비스 객체에서 가져와 booksByCategory에 저장
         List<Book> booksByCategory = bookService.getBookListByCategory(bookCategory);
+        if(booksByCategory == null || booksByCategory.isEmpty()){
+            throw new CategoryException();
+        }
         // 4. booksByCategory 값을 모델 속성 bookLsit에 저장
         model.addAttribute("bookList", booksByCategory);
         // 5. 뷰 이름인 books로 반환하므로 books.html이 파일이름
@@ -102,7 +110,23 @@ public class BookController {
 
     @PostMapping("/add")
     // @ModelAttribute를 이용하여 커맨드 객체 이름을 NewBook으로 수정
-    public String submitAddNewBook(@ModelAttribute("NewBook") Book book) {
+    public String submitAddNewBook(@ModelAttribute("NewBook") Book book,Model model) {
+        // 1. 신규 도서 등록 페이지에서 커맨드 객체의 매개변수 중 도서 이미지에 해당하는 매개변수를 MultipartFile
+        // 객체의 bookImage 변수로 전달
+        MultipartFile bookImage = book.getBookImage();
+        // 2. MultipartFile 타입으로 전송받은 이미지 파일 이름을 얻음
+        String saveName = bookImage.getOriginalFilename();
+        File saveFile = new File("c:\\upload",saveName);
+        model.addAttribute("imageFileName", book.getBookImage() != null ? book.getBookImage().getOriginalFilename() : null);
+
+        if(bookImage != null && !bookImage.isEmpty()){
+            try{
+                // 3. 도서 이미지 파일을 C:upload경로로 업로드
+                bookImage.transferTo(saveFile);
+            } catch (Exception e){
+                throw new RuntimeException("도서 이미지 업로드가 실패하였습니다.",e);
+            }
+        }
         // 신규 도서 정보를 저장하려고 서비스 객체의 setNewBook() 메서드를 호출
         bookService.setNewBook(book);
         // 웹 요청 URL을 강제로 /books로 이동시켜 @RequestMapping("/books")에 매핑
@@ -118,6 +142,17 @@ public class BookController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.setAllowedFields("bookId", "name", "unitPrice", "author", "description", "publisher", "category", "unitsInStock", "totalPages","releaseDate","condition");
+        // 4. <form:input>태그의 file 타입에서 name 속성 이름 bookImage에 바인딩되도록 bookImage를 추가 설정
+        binder.setAllowedFields("bookId", "name", "unitPrice", "author", "description", "publisher", "category", "unitsInStock", "totalPages","releaseDate","condition","bookImage");
+    }
+
+    @ExceptionHandler(value = {BookIdException.class})
+    public ModelAndView handleError(HttpServletRequest req, BookIdException exception){
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("invalidBookId", exception.getBookId());
+        mav.addObject("exception",exception);
+        mav.addObject("url",req.getRequestURL()+"?"+req.getQueryString());
+        mav.setViewName("errorBook");
+        return mav;
     }
 }

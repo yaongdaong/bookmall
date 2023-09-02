@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Security</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<h3>스프링 시큐리티 태그 예제</h3>
+
+<p sec:authorize="hasRole('ROLE_ADMIN')" var="isAdmin" class="nav-item">
+<h3>관리자 권한 화면입니다.</h3>
+</p>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <p>로그인 중입니다.</p>
+    <p th:inline="text">이름 : <span th:remove="tag" sec:authentication="name"/></p>
+    <p th:inline="text">권한 : <span th:remove="tag" sec:authentication="authorities"/></p>
+    <p><a th:href="@{/exam03_1}">[웹 요청 URL /exam03로 이동하기]</a></p>
+</div>
+<div sec:authorize="!hasRole('ROLE_ADMIN')">
+    <p>로그인이 아닙니다.</p>
+    <p><a th:href="@{/admin/tag_1}">[웹 요청 URL /admin/tag_1로 이동하기]</a></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>

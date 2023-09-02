@@ -2,12 +2,15 @@ package com.example.bookmall.controller;
 
 import com.example.bookmall.domain.Member;
 import org.springframework.boot.Banner;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 public class Example02Controller {
@@ -37,5 +40,47 @@ public class Example02Controller {
             System.out.println("["+ member.getHobby()[i]+"]");
         model.addAttribute("member",member);
         return "webpage07_02";
+    }
+
+    @GetMapping("/exam02")
+    public String requestMethod(Model model){
+        return "webpage08_02";
+    }
+
+    @GetMapping("/admin/tag")
+    public String requestMethod2(Model model){
+        return "webpage08_02";
+    }
+
+    @GetMapping("/form_1")
+    public String requestForm(){
+        return "webpage09_01";
+    }
+
+    @PostMapping("/form_1")
+    public String submitForm(MultipartHttpServletRequest request){
+        String name = request.getParameter("name");
+        MultipartFile file = request.getFile("fileImage");
+        String filename = file.getOriginalFilename();
+        File f = new File("c:\\upload\\"+name+"_"+filename);
+        try{
+            file.transferTo(f);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return "webpage09_submit";
+    }
+    @SuppressWarnings("serial")
+    @ResponseStatus(value= HttpStatus.NOT_FOUND, reason="찾을 수 없습니다.")
+    public class Example02Exception extends Exception{
+        public Example02Exception(String message){
+            super(message);
+            System.out.print(message);
+        }
+    }
+
+    @GetMapping("/exam02_1")
+    public void handleRequest() throws Exception{
+        throw new Exception(new Example02Exception("Example02Exception 메시지입니다."));
     }
 }

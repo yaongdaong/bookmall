@@ -1,5 +1,7 @@
 package com.example.bookmall.domain;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 
 public class Member {
@@ -7,14 +9,16 @@ public class Member {
     private String password;
     private String city;
     private String sex;
-    private String[] hobby ;
+    private String[] hobby;
     private Date birth;
+    private String name;
+    private MultipartFile imageFile;
 
-
-    public Member(){
+    public Member() {
         super();
     }
-    public int getId(){
+
+    public int getId() {
         return id;
     }
 
@@ -60,6 +64,22 @@ public class Member {
 
     public void setBirth(Date birth) {
         this.birth = birth;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MultipartFile getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(MultipartFile imageFile) {
+        this.imageFile = imageFile;
     }
 
 }

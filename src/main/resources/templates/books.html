@@ -25,6 +25,25 @@
     <div class="row" text-align="center">
         <tr th:each="book : ${bookList}">
             <div class="col-md-4">
+<!--                <img src="/images/${book.bookId}" class="d-block w-100" alt="...">-->
+<!--                <img th:src="@{'data:image/jpeg;base64,'+${image.generateBase64Image()}}" />-->
+<!--                <img th:src="@{'/c:\\upload\\' + ${book.getBookId()} + '.jpeg'}" th:if="${book.getBookImage()==null}">-->
+<!--                <img th:if="${book.getBookImage() != null and (book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.png') or book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.jpeg'))}" th:src="@{'file:///C:/upload/' + ${book.getBookImage().getOriginalFilename()}}" alt="Book Image">-->
+<!--                <img th:unless="${book.getBookImage() != null and (book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.png') or book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.jpeg'))}" th:src="@{'file:///C:/upload/' + ${book.getBookId()} + '.png'}" alt="Default Image">-->
+                <th:block th:if="${book.bookImage == null}">
+                    <img th:src="@{'file:/C:/upload/' + book.bookId + '.png'}" style="width:100%"/>
+                </th:block>
+                <th:block th:unless="${book.bookImage == null}">
+                    <img th:src="@{'file:/C:/upload/' + book.bookImage.originalFilename}" style="width:100%"/>
+                </th:block>
+
+
+
+
+                <!--                <img src="/C:/upload/${book.getBookId()}.jpeg" alt="Book Image"th:if="${book.getBookImage()==null}">-->
+<!--                <img th:src="@{'/C:\\upload\\'+${book.getBookId()}.jpeg}" style="width:100%" th:if="${book.getBookImage()==null}"></img>-->
+<!--                <img th:src="@{'/C:\\upload\\'+${book.getBookImage().getOriginalFilename()}}" style="width:100%" th:unless="${book.getBookImage()==null}"></img>-->
+
                 <h3 th:text="${book.name}"></h3>
                 <p th:text="${book.author}"></p>
                 <br th:text="${book.publisher}+' | ' +${book.releaseDate}">

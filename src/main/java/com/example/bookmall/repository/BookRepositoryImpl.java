@@ -1,6 +1,7 @@
 package com.example.bookmall.repository;
 
 import com.example.bookmall.domain.Book;
+import com.example.bookmall.exception.BookIdException;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -105,7 +106,7 @@ public class BookRepositoryImpl implements BookRepository {
             }
         }
         if (bookInfo == null)
-            throw new IllegalArgumentException("도서ID가 " + bookId + "인 해당 도서를 찾을 수 없습니다.");
+            throw new BookIdException(bookId);
         return bookInfo;
     }
 
