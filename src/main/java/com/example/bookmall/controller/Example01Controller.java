@@ -2,6 +2,8 @@ package com.example.bookmall.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.bookmall.domain.Member;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -88,5 +90,15 @@ public class Example01Controller {
         return "webpage10_01";
     }
 
+public static Logger logger = LoggerFactory.getLogger(Example01Controller.class);
+    @GetMapping("/exam01_2")
+    public String request1Method(Model model){
+        logger.trace("Trace 메시지!");
+        logger.debug("Debug 메시지!");
+        logger.info("Info 메시지!");
+        logger.warn("Warn 메시지!");
+        logger.error("Error 메시지!");
+        return "webpage11_01";
+    }
 
 }
