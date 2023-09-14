@@ -1,7 +1,9 @@
 package com.example.bookmall.controller;
 
+import com.example.bookmall.interceptor.ExampleInterceptor;
 import com.example.bookmall.domain.Member;
-import org.springframework.boot.Banner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +31,7 @@ public class Example02Controller {
     }
 
     @PostMapping("/member")
-    public String submitForm(@ModelAttribute Member member, Model model){
+    public String submitForm(@ModelAttribute Member member, Model model) {
         System.out.println("@PostMapping-------------");
         System.out.println("아이디: " + member.getId());
         System.out.println("비밀번호: " + member.getPassword());
@@ -37,50 +39,61 @@ public class Example02Controller {
         System.out.println("성별: " + member.getSex());
         System.out.println("취미: ");
         for (int i = 0; i < member.getHobby().length; i++)
-            System.out.println("["+ member.getHobby()[i]+"]");
-        model.addAttribute("member",member);
+            System.out.println("[" + member.getHobby()[i] + "]");
+        model.addAttribute("member", member);
         return "webpage07_02";
     }
 
     @GetMapping("/exam02")
-    public String requestMethod(Model model){
+    public String requestMethod(Model model) {
         return "webpage08_02";
     }
 
     @GetMapping("/admin/tag")
-    public String requestMethod2(Model model){
+    public String requestMethod2(Model model) {
         return "webpage08_02";
     }
 
     @GetMapping("/form_1")
-    public String requestForm(){
+    public String requestForm() {
         return "webpage09_01";
     }
 
     @PostMapping("/form_1")
-    public String submitForm(MultipartHttpServletRequest request){
+    public String submitForm(MultipartHttpServletRequest request) {
         String name = request.getParameter("name");
         MultipartFile file = request.getFile("fileImage");
         String filename = file.getOriginalFilename();
-        File f = new File("c:\\upload\\"+name+"_"+filename);
-        try{
+        File f = new File("c:\\upload\\" + name + "_" + filename);
+        try {
             file.transferTo(f);
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return "webpage09_submit";
     }
+
     @SuppressWarnings("serial")
-    @ResponseStatus(value= HttpStatus.NOT_FOUND, reason="찾을 수 없습니다.")
-    public class Example02Exception extends Exception{
-        public Example02Exception(String message){
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "찾을 수 없습니다.")
+    public class Example02Exception extends Exception {
+        public Example02Exception(String message) {
             super(message);
             System.out.print(message);
         }
     }
 
     @GetMapping("/exam02_1")
-    public void handleRequest() throws Exception{
+    public void handleRequest() throws Exception {
         throw new Exception(new Example02Exception("Example02Exception 메시지입니다."));
+    }
+
+    public Logger logger = LoggerFactory.getLogger(ExampleInterceptor.class);
+
+    @GetMapping("/exampl02_2")
+    public String request1Method(Model model) {
+        logger.info("뷰페이지 webpage11_02 호출");
+        model.addAttribute("data", "인터셉터 예제입니다");
+        model.addAttribute("data2", "웹 요청 URL은 /exam02_2입니다");
+        return "webpage11_02";
     }
 }

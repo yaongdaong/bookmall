@@ -1,13 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="WARN" packages="org.apache.logging.log4j.core">
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        <!-- Console Appender -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>
         </Console>
+
+        <!-- Rolling File Appender for monitor -->
+        <RollingFile name="monitor" fileName="c:/logs/monitor.log" filePattern="c:/logs/monitor-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+
+        <!-- Rolling File Appender for audit -->
+        <RollingFile name="audit" fileName="c:/logs/audit.log"
+                     filePattern="c:/logs/audit-%d{yyyy-MM-dd-HH-mm}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
     </Appenders>
+
+    <!-- Loggers -->
     <Loggers>
-        <Root level="INFO">
-            <AppenderRef ref="Console"/>
+        <!-- Application Logger -->
+        <Logger name="com.springmvc" level="info">
+            <AppenderRef ref="monitor"/>
+        </Logger>
+
+        <!-- Root Logger -->
+        <Root level="info">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="audit"/>
         </Root>
     </Loggers>
 </Configuration>
+
+
+        <!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<Configuration status="INFO">-->
+<!--    <Appenders>-->
+<!--        <Console name="Console" target="SYSTEM_OUT">-->
+<!--            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
+<!--        </Console>-->
+<!--    </Appenders>-->
+<!--    <Loggers>-->
+<!--        <Root level="INFO">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </Root>-->
+<!--    </Loggers>-->
+<!--</Configuration>-->
+
+<!--&lt;!&ndash;Appenders&ndash;&gt;-->
+<!--<appender name="console" class="org.apache.log4j.ConsoleAppender">-->
+<!--<param name="Target" value="System.out"/>-->
+<!--<layout class="org.apache.log4j.PatternLayout">-->
+<!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
+<!--</layout>-->
+<!--</appender>-->
+
+<!--&lt;!&ndash;파일에 출력하기&ndash;&gt;-->
+<!--<appender name="monitor" class="org.apache.log4j.RollingFileAppender">-->
+<!--<param name="append" value="false"/>-->
+<!--<param name="maxFileSize" value="10KB"/>-->
+<!--<param name="maxBackupIndex" value="5"/>-->
+<!--<param name="file" value="c:/logs/monitor.log"/>-->
+<!--<layout class="org.apache.log4j.PatternLayout">-->
+<!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
+<!--</layout>-->
+<!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+<!--    <param name="LavelMin" value="info"/>-->
+<!--    <param name="LavelMax" value="info"/>-->
+<!--</filter>-->
+<!--</appender>-->
+<!--&lt;!&ndash;Application Loggers&ndash;&gt;-->
+<!--<logger name="com.springmvc">-->
+<!--<level value="info"/>-->
+<!--<appender-ref ref="monitor"/>-->
+<!--</logger>-->
+
+<!--<appender name="audit" class="org.apache.log4j.RollingFileAppender">-->
+<!--<param name="append" value="false"/>-->
+<!--<param name="maxFileSize" value="10KB"/>-->
+<!--<param name="maxBackupIndex" value="5"/>-->
+<!--<param name="file" value="c:/logs/audit.log"/>-->
+<!--<layout class="org.apache.log4j.PatternLayout">-->
+<!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
+<!--</layout>-->
+<!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+<!--    <param name="LevelMin" value="warn"/>-->
+<!--    <param name="LevelMax" value="warn"/>-->
+<!--</filter>-->
+<!--</appender>-->
