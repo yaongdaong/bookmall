@@ -4,6 +4,8 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.bookmall.domain.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 @Controller
 public class Example01Controller {
@@ -100,5 +103,19 @@ public static Logger logger = LoggerFactory.getLogger(Example01Controller.class)
         logger.error("Error 메시지!");
         return "webpage11_01";
     }
+
+
+
+        @Autowired
+        private MessageSource messageSource;
+
+        @GetMapping("/welcome")
+        public String welcome(Model model) {
+            String welcomeMessage = messageSource.getMessage("welcome.message", null, Locale.getDefault());
+            String errorMessage = messageSource.getMessage("error.message", null, Locale.getDefault());
+            model.addAttribute("welcomeMessage", welcomeMessage);
+            model.addAttribute("errorMessage", errorMessage);
+            return "webpage12_01";
+        }
 
 }
