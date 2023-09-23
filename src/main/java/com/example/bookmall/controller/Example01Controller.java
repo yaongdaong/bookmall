@@ -2,6 +2,8 @@ package com.example.bookmall.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.bookmall.domain.Member;
+import com.example.bookmall.domain.Product;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,8 +107,6 @@ public static Logger logger = LoggerFactory.getLogger(Example01Controller.class)
         return "webpage11_01";
     }
 
-
-
         @Autowired
         private MessageSource messageSource;
 
@@ -117,5 +118,23 @@ public static Logger logger = LoggerFactory.getLogger(Example01Controller.class)
             model.addAttribute("errorMessage", errorMessage);
             return "webpage12_01";
         }
+
+        @GetMapping("/exam01_3")
+    public String showForm1(Model model){
+            model.addAttribute("product",new Product());
+            String notnullMessage = messageSource.getMessage("NotNull.Product.name", null, Locale.getDefault());
+            model.addAttribute("notnullMessage", notnullMessage);
+            String priceMessage = messageSource.getMessage("Min.Product.price", null, Locale.getDefault());
+            model.addAttribute("priceMessage", priceMessage);
+            return "webpage13_01";
+        }
+
+        @PostMapping("/exam01_3")
+    public String submit(@Valid @ModelAttribute Product product, Errors errors){
+            if (errors.hasErrors())
+                return "webpage13_01";
+            return "webpage13_01";
+        }
+
 
 }

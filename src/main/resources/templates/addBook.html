@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>도서 등록</title>
@@ -18,13 +18,19 @@
 
 <div class="p-5 mb-4 bg-body-tertiary">
     <div class="container">
-        <h1 class="display-3">도서 등록</h1>
+<!--        <h1 class="display-3">도서 등록</h1>-->
+        <h1 th:text="#{addBook.form.title.label}"/>
     </div>
 </div>
 <div class="float-end">
     <form th:action="@{/logout}" method="post">
         <input type="submit" class="btn btn-primary" value="로그아웃">
     </form>
+</div>
+
+<div class="float-end">
+<a th:href="@{/books/add(lang='en')}">English</a>
+<a th:href="@{/books/add(lang='ko')}">Korean</a>
 </div>
 
 <div class="container">
@@ -34,63 +40,73 @@
     <form th:action="@{/books/add}" th:object="${NewBook}" method="post" enctype="multipart/form-data">
         <fieldset>
             <!--컨트롤러에서 전달된 모델 속성 이름 addTitle 값을 출력-->
-            <legend th:text="${addTitle}"/>
+            <legend th:text="#{addBook.form.subtitle.label}"/>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">도서ID</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.bookId.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{bookId}" class="form-control"/>
                 </div>
+                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('bookId')}">
+                    <p th:errors="*{bookId}"></p>
+                </div>
+
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">도서명</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.name.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{name}" class="form-control"/>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label clas="col-sm-2 control-label">가격</label>
-                <div class="col-sm-3">
-                    <input type="text" th:field="*{unitPrice}" class="form-control"/>
+                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('name')}">
+                    <p th:errors="*{name}"></p>
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">저자</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.unitPrice.label}"/></label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{unitPrice}" class="form-control"/>
+                </div>
+                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('unitPrice')}">
+                    <p th:errors="*{unitPrice}"></p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.author.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{author}" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">상세정보</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.description.label}"/></label>
                 <div class="col-sm-5">
                     <input type="text" th:field="*{description}" cols="50" rows="2" class="form-control">
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">출판사</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.publisher.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{publisher}" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">분야</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.category.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{category}" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">재고수</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.unitsInStock.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{unitsInStock}" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">출판일</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.releaseDate.label}"/></label>
                 <div class="col-sm-3">
                     <input type="text" th:field="*{releaseDate}" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">상태</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.condition.label}"/></label>
                 <div class="col-sm-3">
                     <input type="radio" th:field="*{condition}" value="New"/>New
                     <input type="radio" th:field="*{condition}" value="Old"/>Old
@@ -98,7 +114,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label clas="col-sm-2 control-label">도서이미지</label>
+                <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.bookImage.label}"/></label>
                 <div class="col-sm-7">
                     <!--파일을 업로드하려면 멀티파트 요청으로 인코딩 속성인 enctype="multipart/form-data"를 form태그안에 설정-->
                     <form th:action="@{/books/add}" th:object="${NewBook}" method="post" enctype="multipart/form-data">
@@ -110,7 +126,7 @@
             <div class="form-group row">
                 <div class="col-sm-offset-2 col-sm-10">
                     <div class="col-sm-3">
-                        <input type="submit" class="btn btn-primary" value="등록">
+                        <input type="submit" class="btn btn-primary" th:value="#{addBook.form.button.label}">
                     </div>
                 </div>
             </div>

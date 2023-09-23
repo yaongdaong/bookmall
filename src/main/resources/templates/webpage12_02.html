@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Internationalization</title>
+</head>
+<body>
+<a th:href="@{/change-language(lang='en')}">English</a>
+<a th:href="@{/change-language(lang='ko')}">Korean</a>
+<a th:href="@{/change-language(lang='jp')}">Japan</a>
+<p th:text="#{Person.form.Enter.message}">다국어처리</p>
+</body>
+</html>

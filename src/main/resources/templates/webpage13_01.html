@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Validation</title>
+</head>
+<body>
+<h2>유효성 검사</h2>
+<form th:action="@{/exam01_3}" th:object="${product}" method="post">
+    <!-- 폼 필드들을 여기에 추가합니다 -->
+    <p th:inline="text" style="display: inline;">품명 : </p><input type="text" th:field="*{name}" />
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <p th:inline="text" style="display: inline;">가격 : </p><input type="text" th:field="*{price}" />
+    <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+
+    <!-- 기타 필드들 -->
+    <button type="submit">제출</button>
+    <button type="reset">취소</button>
+</form>
+
+</body>
+</html>

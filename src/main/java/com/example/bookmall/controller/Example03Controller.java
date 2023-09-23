@@ -4,16 +4,17 @@ import com.example.bookmall.domain.Member;
 import com.example.bookmall.exception.Example03Exception;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 @Controller
 public class Example03Controller {
@@ -72,5 +73,19 @@ public class Example03Controller {
         model.addObject("exception",ex);
         model.setViewName("webpage10_03");
         return model;
+    }
+
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @GetMapping("/change-language")
+    public String changeLanguage(@RequestParam("lang") String lang,Model model) {
+        // 요청에서 언어 변경
+        Locale newLocale = new Locale(lang);
+        LocaleContextHolder.setLocale(newLocale);
+        // 변경된 언어에 맞는 메시지 가져오기
+        String message = messageSource.getMessage("Person.form.Enter.message", null, LocaleContextHolder.getLocale());
+        return "webpage12_02";
     }
 }

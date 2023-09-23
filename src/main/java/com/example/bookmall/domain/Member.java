@@ -1,10 +1,21 @@
 package com.example.bookmall.domain;
 
+import com.example.bookmall.validator.MemberId;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
 public class Member {
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+    @MemberId
+    private String memberId;
     private int id;
     private String password;
     private String city;

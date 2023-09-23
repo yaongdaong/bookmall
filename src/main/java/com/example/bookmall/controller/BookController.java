@@ -1,16 +1,15 @@
 package com.example.bookmall.controller;
 
 import com.example.bookmall.domain.Book;
-import com.example.bookmall.domain.Member;
 import com.example.bookmall.exception.BookIdException;
 import com.example.bookmall.exception.CategoryException;
 import com.example.bookmall.service.BookService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,14 +109,18 @@ public class BookController {
 
     @PostMapping("/add")
     // @ModelAttribute를 이용하여 커맨드 객체 이름을 NewBook으로 수정
-    public String submitAddNewBook(@ModelAttribute("NewBook") Book book,Model model) {
+    public String submitAddNewBook(@Valid @ModelAttribute("NewBook") Book book,BindingResult result) {
+
+        if(result.hasErrors()){
+            return "addBook";
+        }
         // 1. 신규 도서 등록 페이지에서 커맨드 객체의 매개변수 중 도서 이미지에 해당하는 매개변수를 MultipartFile
         // 객체의 bookImage 변수로 전달
         MultipartFile bookImage = book.getBookImage();
         // 2. MultipartFile 타입으로 전송받은 이미지 파일 이름을 얻음
         String saveName = bookImage.getOriginalFilename();
         File saveFile = new File("c:\\upload",saveName);
-        model.addAttribute("imageFileName", book.getBookImage() != null ? book.getBookImage().getOriginalFilename() : null);
+        // model.addAttribute("imageFileName", book.getBookImage() != null ? book.getBookImage().getOriginalFilename() : null);
 
         if(bookImage != null && !bookImage.isEmpty()){
             try{
@@ -143,6 +146,7 @@ public class BookController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         // 4. <form:input>태그의 file 타입에서 name 속성 이름 bookImage에 바인딩되도록 bookImage를 추가 설정
+
         binder.setAllowedFields("bookId", "name", "unitPrice", "author", "description", "publisher", "category", "unitsInStock", "totalPages","releaseDate","condition","bookImage");
     }
 

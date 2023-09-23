@@ -2,11 +2,13 @@ package com.example.bookmall.controller;
 
 import com.example.bookmall.interceptor.ExampleInterceptor;
 import com.example.bookmall.domain.Member;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -89,11 +91,25 @@ public class Example02Controller {
 
     public Logger logger = LoggerFactory.getLogger(ExampleInterceptor.class);
 
-    @GetMapping("/exampl02_2")
+    @GetMapping("/examp02_2")
     public String request1Method(Model model) {
         logger.info("뷰페이지 webpage11_02 호출");
         model.addAttribute("data", "인터셉터 예제입니다");
         model.addAttribute("data2", "웹 요청 URL은 /exam02_2입니다");
         return "webpage11_02";
+    }
+
+    @GetMapping("/exam02_3")
+    public String showForm(Model model){
+        model.addAttribute("member",new Member());
+        return "webpage13_02";
+    }
+
+    @PostMapping("/exam02_3")
+    public String submit(@Valid @ModelAttribute Member member, Errors errors){
+        if(errors.hasErrors()){
+            return "webpage13_02";
+        }
+        return "webpage13_02";
     }
 }

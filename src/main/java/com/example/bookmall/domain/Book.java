@@ -1,10 +1,16 @@
 package com.example.bookmall.domain;
 
+import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 public class Book {
+    @Pattern(regexp="ISBN[1-9]+",message = "유효하지 않은 도서ID입니다(숫자로 조합하고 ISBN으로 시작하세요).")
     private String bookId; // 도서 ID
+    @Size(min=4,max=50,message="유효하지 않은 도서명입니다(최소 4자에서 최대 50자까지 입력하세요).")
     private String name; // 도서명
+    @Min(value=0,message="유효하지 않은 가격입니다(0이상의 수를 입력하세요).")
+    @Digits(integer=8,fraction=2,message="유효하지 않은 가격입니다(소수점 2자리까지, 8자리까지 입력하세요).")
+    @NotNull(message="유효하지 않은 가격입니다(가격을 입력하세요).")
     private int unitPrice; // 가격
     private String author; // 저자
     private String description; // 설명
