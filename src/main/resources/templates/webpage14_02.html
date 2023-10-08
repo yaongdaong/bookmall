@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RESTful 웹 서비스</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+    var obj = {"name": "kim", "age": 30};
+    function test() {
+        $.ajax({
+            url: "/test",
+            type: "post",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            contentType: "application/json",
+            success: function(data) {
+                alert("성공");
+            },
+            error: function(errorThrown) {
+                alert("실패");
+            }
+        });
+    }
+
+var requestData = {"key1": "value1", "key2": "value2"};
+function example() {
+$.ajax({
+url: "/example",
+type: "POST",
+data: JSON.stringify(requestData),
+contentType: "application/json",
+success: function(response) {
+console.log(response);
+},
+error: function(error) {
+console.error("Error:", error);
+}
+});}
+</script>
+<body>
+<h3>RESTful 웹 서비스</h3>
+<button onclick="test()" type="button">실행하기</button>
+<button onclick="example()" type="button">되냐</button>
+</body>
+</html>

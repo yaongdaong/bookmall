@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RESTful 웹 서비스</title>
+</head>
+<body>
+<h3>RESTful 웹 서비스</h3>
+<p th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd HH:mm:ss')}"></p>
+<p th:text="${title}"></p>
+<p th:text="${name}"></p>
+<p th:text="${age}"></p>
+<p th:text="${email}"></p>
+<p th:text="${result}"></p>
+</form>
+</body>
+</html>

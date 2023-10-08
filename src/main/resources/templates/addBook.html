@@ -98,6 +98,9 @@
                 <div class="col-sm-3">
                     <input type="text" th:field="*{unitsInStock}" class="form-control"/>
                 </div>
+                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('unitsInStock')}">
+                    <p th:errors="*{unitsInStock}"></p>
+                </div>
             </div>
             <div class="form-group row">
                 <label clas="col-sm-2 control-label"><h1 th:text="#{addBook.form.releaseDate.label}"/></label>

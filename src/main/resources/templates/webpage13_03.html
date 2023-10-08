@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Validation</title>
+</head>
+<body>
+<h2>유효성 검사</h2>
+<form th:action="@{/exam03_3}" th:object="${person}" method="post">
+    <!-- 폼 필드들을 여기에 추가합니다 -->
+    <p th:inline="text" style="display: inline;">이름 : </p>
+    <input type="text" th:field="*{name}" />
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <p th:inline="text" style="display: inline;">나이 : </p>
+    <input type="text" th:field="*{age}" />
+    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    <p th:inline="text" style="display: inline;">이메일 : </p>
+    <input type="text" th:field="*{email}" />
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <!-- 기타 필드들 -->
+    <button type="submit">확인</button>
+    <button type="reset">취소</button>
+</form>
+
+</body>
+</html>

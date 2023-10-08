@@ -1,16 +1,24 @@
 package com.example.bookmall.domain;
 
+import com.example.bookmall.validator.BookId;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
 public class Book {
-    @Pattern(regexp="ISBN[1-9]+",message = "유효하지 않은 도서ID입니다(숫자로 조합하고 ISBN으로 시작하세요).")
+    // 1. 도메인 클래스 Book의 bookId 필드는 저장소 객체의 존재 여부에 대한 유효성 검사를 위해 사용자 정의 애너테이션 @BookId를 선언
+    @BookId
+    // @Pattern(regexp="ISBN[1-9]+",message = "유효하지 않은 도서ID입니다(숫자로 조합하고 ISBN으로 시작하세요).")
+    @Pattern(regexp="ISBN[1-9]+",message = "{Pattern.NewBook.bookId}")
     private String bookId; // 도서 ID
-    @Size(min=4,max=50,message="유효하지 않은 도서명입니다(최소 4자에서 최대 50자까지 입력하세요).")
+    // @Size(min=4,max=50,message="유효하지 않은 도서명입니다(최소 4자에서 최대 50자까지 입력하세요).")
+    @Size(min=4,max=50,message="{Size.NewBook.name}")
     private String name; // 도서명
-    @Min(value=0,message="유효하지 않은 가격입니다(0이상의 수를 입력하세요).")
-    @Digits(integer=8,fraction=2,message="유효하지 않은 가격입니다(소수점 2자리까지, 8자리까지 입력하세요).")
-    @NotNull(message="유효하지 않은 가격입니다(가격을 입력하세요).")
+    // @Min(value=0,message="유효하지 않은 가격입니다(0이상의 수를 입력하세요).")
+    @Min(value=0,message="{Min.NewBook.unitPrice}")
+    // @Digits(integer=8,fraction=2,message="유효하지 않은 가격입니다(소수점 2자리까지, 8자리까지 입력하세요).")
+    @Digits(integer=8,fraction=2,message="{Digits.NewBook.unitPrice}")
+    // @NotNull(message="유효하지 않은 가격입니다(가격을 입력하세요).")
+    @NotNull(message="{NotNull.NewBook.unitPrice}")
     private int unitPrice; // 가격
     private String author; // 저자
     private String description; // 설명

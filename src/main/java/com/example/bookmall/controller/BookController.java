@@ -4,6 +4,7 @@ import com.example.bookmall.domain.Book;
 import com.example.bookmall.exception.BookIdException;
 import com.example.bookmall.exception.CategoryException;
 import com.example.bookmall.service.BookService;
+import com.example.bookmall.validator.UnitsInStockValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,13 @@ public class BookController {
     @Autowired
     //    1.유연성,확장성을 높이기 위해 서비스객체인 BookService로 저장소 객체에 접근
     private BookService bookService;
+
+    // @Autowired
+    // private BookValidator bookValidator;
+
+    @Autowired
+    // UnitsInStockValidator의 인스턴스 선언
+    private UnitsInStockValidator unitsInStockValidator;
 
     //    2.요청매핑 : 사용자의 웹 요청 URL과 클래스 또는 메서드가 매핑되도록 @RequestMapping 설정
     @GetMapping
@@ -109,11 +117,12 @@ public class BookController {
 
     @PostMapping("/add")
     // @ModelAttribute를 이용하여 커맨드 객체 이름을 NewBook으로 수정
-    public String submitAddNewBook(@Valid @ModelAttribute("NewBook") Book book,BindingResult result) {
+    public String submitAddNewBook(@Valid @ModelAttribute("NewBook") Book book,BindingResult result, HttpServletRequest request) {
 
         if(result.hasErrors()){
             return "addBook";
         }
+        String[] suppressedFields = result.getSuppressedFields();
         // 1. 신규 도서 등록 페이지에서 커맨드 객체의 매개변수 중 도서 이미지에 해당하는 매개변수를 MultipartFile
         // 객체의 bookImage 변수로 전달
         MultipartFile bookImage = book.getBookImage();
@@ -145,8 +154,9 @@ public class BookController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
+        // 생성한 unitsInStockValidator 설정
+        binder.setValidator(unitsInStockValidator);
         // 4. <form:input>태그의 file 타입에서 name 속성 이름 bookImage에 바인딩되도록 bookImage를 추가 설정
-
         binder.setAllowedFields("bookId", "name", "unitPrice", "author", "description", "publisher", "category", "unitsInStock", "totalPages","releaseDate","condition","bookImage");
     }
 
@@ -159,4 +169,8 @@ public class BookController {
         mav.setViewName("errorBook");
         return mav;
     }
+
+
+
+
 }

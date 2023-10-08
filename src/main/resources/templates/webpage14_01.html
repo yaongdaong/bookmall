@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RESTful 웹 서비스</title>
+</head>
+<body>
+<h3>RESTful 웹 서비스</h3>
+<form th:action="@{/exam08}" method="post">
+    <p th:inline="text" style="display: inline;">이름 :
+        <input type="text" name="name" /></p>
+    <p th:inline="text" style="display: inline;">나이 :
+        <input type="text" name="age" /></p>
+    <p th:inline="text" style="display: inline;">이메일 :
+        <input type="text" name="email" /></p>
+    <p th:inline="text" style="display: inline;">
+        <input type="submit" value="확인" /></p>
+</form>
+</body>
+</html>
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>RESTful 웹 서비스</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h3>RESTful 웹 서비스</h3>-->
+<!--<form th:action="@{/exam08}" method="post">-->
+<!--    <p th:inline="text" style="display: inline;">이름 :-->
+<!--        <input type="text" name="name" th:field="${name}"/></p>-->
+<!--    <p th:inline="text" style="display: inline;">나이 :-->
+<!--        <input type="text" th:field="${age}"/></p>-->
+<!--    <p th:inline="text" style="display: inline;">이메일 :-->
+<!--        <input type="text" th:field="${email}" /></p>-->
+<!--    <p th:inline="text" style="display: inline;">이메일 :-->
+<!--        <input type="submit" value="확인"/></p>-->
+
+
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->
