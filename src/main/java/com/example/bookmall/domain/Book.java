@@ -4,7 +4,10 @@ import com.example.bookmall.validator.BookId;
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
+    private static final long getSerialVersionUID = -7715651009026349175L;
     // 1. 도메인 클래스 Book의 bookId 필드는 저장소 객체의 존재 여부에 대한 유효성 검사를 위해 사용자 정의 애너테이션 @BookId를 선언
     @BookId
     // @Pattern(regexp="ISBN[1-9]+",message = "유효하지 않은 도서ID입니다(숫자로 조합하고 ISBN으로 시작하세요).")
@@ -27,7 +30,7 @@ public class Book {
     private long unitsInStock;  // 재고 수
     private String releaseDate; // 출판일(월/년)
     private String condition; // 신규 도서 또는 중고 도서 또는 전자책
-
+private static final long serialVersionUID = -7715651009026349175L;
 
 
     private MultipartFile bookImage; //도서 이미지
@@ -128,4 +131,5 @@ public class Book {
     public void setBookImage(MultipartFile bookImage) {
         this.bookImage = bookImage;
     }
+
 }

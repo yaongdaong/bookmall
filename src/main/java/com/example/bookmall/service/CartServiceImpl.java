@@ -1,6 +1,7 @@
 package com.example.bookmall.service;
 
 import com.example.bookmall.domain.Cart;
+import com.example.bookmall.exception.CartException;
 import com.example.bookmall.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,17 @@ public class CartServiceImpl implements CartService{
     }
     public void update(String cartId, Cart cart){
         cartRepository.update(cartId, cart);
+    }
+    public void delete(String cartId){
+        cartRepository.delete(cartId);
+    }
+    // validateCart() 메서드는 장바구니 ID에 대한 장바구니 저장소 객체에서 장바구니 정보를 가져와 반환.
+    // 장바구니 저장소 객체에 장바구니ID가 없으면 예외처리로 CartExcpetion() 메서드를 호출
+    public Cart validateCart(String cartId){
+        Cart cart = cartRepository.read(cartId);
+        if(cart == null || cart.getCartItems().size() == 0){
+            throw new CartException(cartId);
+        }
+        return cart;
     }
 }

@@ -2,13 +2,17 @@ package com.example.bookmall.domain;
 
 import org.springframework.security.core.parameters.P;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class Cart {
+public class Cart implements Serializable {
+    private static final long getSerialVersionUID = 2155125089108199199L;
     private String cartId; // 장바구니 ID
     private Map<String, CartItem> cartItems; // 장바구니 항목
     private int grandTotal; // 총액
+    private static final long serialVersionUID = 3636831123198280235L;
 
     // 1.generate constructors from superclass
     public Cart(){
@@ -51,30 +55,17 @@ public class Cart {
         }
     }
 
-    // 5.generate hashCode() and equals()
     @Override
-    public int hashCode(){
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((cartId == null)? 0 : cartId.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return Objects.equals(cartId, cart.cartId);
     }
 
     @Override
-    public boolean equals(Object obj){
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Cart other = (Cart) obj;
-        if (cartId == null){
-            if (other.cartId != null)
-                return false;
-        } else if (!cartId.equals(other.cartId))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(cartId);
     }
 
     public void addCartItem(CartItem item){
@@ -88,6 +79,12 @@ public class Cart {
         } else{
             cartItems.put(bookId, item); // 도서 ID에 대한 도서 정보(item) 저장
         }
+        updateGrandTotal(); // 총액 갱신
+    }
+
+    public void removeCartItem(CartItem item){
+        String bookId = item.getBook().getBookId();
+        cartItems.remove(bookId); // bookId 도서 삭제
         updateGrandTotal(); // 총액 갱신
     }
 }

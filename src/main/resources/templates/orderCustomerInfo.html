@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="./">Home</a>
+        </div>
+    </div>
+</nav>
+
+<div class="p-5 mb-4 bg-body-tertiary">
+    <div class="container">
+        <h1>고객정보</h1>
+    </div>
+</div>
+
+<div class="container">
+    <!--1.고객 정보 폼 페이지에서 입력된 데이터를 바인딩하려면 modelAttribute 속성을 사용하여
+    커맨드 객체 order.customer로 설정-->
+    <form th:object="${order.customer}" class="form-horizontal">
+        <fieldset>
+            <legend>고객 세부 사항</legend>
+            <!--2.장바구니에 담긴 도서를 주문할 때 고객의 세부 사항으로
+            고객 ID, 성명, 전화번호, 국가 이름, 우편번호, 주소, 세부 주소 등을 입력받음-->
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">고객 ID</label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{customerId}" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">성명</label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{name}" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">전화번호</label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{phone}" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">국가명</label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{address.country}" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">우편번호</label>
+                <div class="col-sm-5">
+                    <input type="text" th:field="*{address.zipCode}" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">주소</label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{address.addressName}" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label clas="col-sm-2 control-label">세부주소</label>
+                <div class="col-sm-3">
+                    <input type="text" th:field="*{address.detailName}" class="form-control"/>
+                </div>
+            </div>
+            <!--3._flowExecutionKey는 웹 플로우에서 플로 순번의 키 값을 가짐.
+            예를 들어 고객 세부 사항의 뷰 페이지에 대한요청 URL이
+            http://localhost:8080/Chapter15/checkout?execution=els1이라면 _flowExecutionKey값은 els1이 된다.-->
+            <input type="hidden" name="_flowExecutionKey" th:value="${flowExecutionKey}"/>
+
+            <div class="form-group row">
+                <div class="col-sm-offset-2 col-sm-1o">
+                    <!--4.웹 플로우 정의 파일을 설정하여 등록 버튼을 누르면 이벤트 ID가 customerInfo로 되면서
+                    뷰 페이지 orderShippingInf가 출력됨. 취소 버튼을 누르면 이벤트 ID가 cancel이 되면서 뷰페이지
+                    orderCancelled가 출력됨-->
+                    <input type="submit" class="btn btn-primary" th:value="등록" name="_eventId_customerInfo"/>
+                    <button class="btn btn-default" name="_eventId_cancel">취소</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>

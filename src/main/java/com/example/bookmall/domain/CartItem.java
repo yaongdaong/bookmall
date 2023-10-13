@@ -1,6 +1,10 @@
 package com.example.bookmall.domain;
 
-public class CartItem {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class CartItem implements Serializable {
+    private static final long getSerialVersionUID = 3636831123198280235L;
     private Book book; // 도서
     private int quantity; // 도서 개수
     private int totalPrice; // 도서 가격
@@ -44,29 +48,16 @@ public class CartItem {
         totalPrice = this.book.getUnitPrice() * this.quantity;
     }
 
-    // 5.generate hashCode() and equals()-book field
     @Override
-    public int hashCode(){
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((book == null) ? 0 : book.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItem cartItem = (CartItem) o;
+        return Objects.equals(book, cartItem.book);
     }
 
     @Override
-    public boolean equals(Object obj){
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CartItem other = (CartItem) obj;
-        if (book == null){
-            if (other.book != null)
-                return false;
-        } else if (!book.equals(other.book))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(book);
     }
 }
