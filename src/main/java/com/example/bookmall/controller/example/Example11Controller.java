@@ -1,4 +1,4 @@
-package com.example.bookmall.controller;
+package com.example.bookmall.controller.example;
 
 import com.example.bookmall.domain.Person;
 import org.springframework.web.bind.annotation.GetMapping;

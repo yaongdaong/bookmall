@@ -1,4 +1,4 @@
-package com.example.bookmall.controller;
+package com.example.bookmall.controller.example;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -45,6 +45,8 @@ public class CartController {
     public String requestCartList(@PathVariable(value = "cartId") String cartId, Model model) {
         Cart cart = cartService.read(cartId);
         model.addAttribute("cart", cart);
+        model.addAttribute("heading", "장바구니");
+        model.addAttribute("subheading", "Shopping Cart");
         return "cart";
     }
 
@@ -58,8 +60,8 @@ public class CartController {
     // 1. addCartByNewItem() 메서드는 HTTP 메서드가 PUT 방식으로 요청 URI가 /cart/add/{bookId}일 때
     // 경로 변수 bookId에 대해 해당 도서를 장바구니에 추가로 등록하고 장바구니를 갱신
     @PutMapping("/add/{bookId}")
-    @ResponseStatus(value= HttpStatus.NO_CONTENT) // 오류 응답 상태 코드 설정
-    public void addCartByNewItem(@PathVariable String bookId, HttpServletRequest request){
+    @ResponseStatus(value = HttpStatus.NO_CONTENT) // 오류 응답 상태 코드 설정
+    public void addCartByNewItem(@PathVariable String bookId, HttpServletRequest request) {
         // 장바구니 ID인 세션 ID 가져오기
         String sessionId = request.getSession(true).getId();
         Cart cart = cartService.read(sessionId); // 장바구니에 등록된 모든 정보 얻어오기
@@ -67,40 +69,12 @@ public class CartController {
             cart = cartService.create(new Cart(sessionId));
         // 경로 변수 bookId에 대한 정보 얻어 오기
         Book book = bookService.getBookById(bookId);
-        if(book == null)
+        if (book == null)
             throw new IllegalArgumentException(new BookIdException(bookId));
         // bookId에 대한 도서 정보를 장바구니에 등록하기
         cart.addCartItem(new CartItem(book));
         cartService.update(sessionId, cart); // 세션 ID에 대한 장바구니 갱신하기
-        // // 세션 ID로부터 장바구니를 가져오고 도서를 추가합니다.
-        // String sessionId = request.getSession(true).getId();
-        // Cart cart = cartService.read(sessionId);
-        //
-        // // 도서 정보를 가져오고 CartItem을 생성하여 장바구니에 추가합니다.
-        // Book book = bookService.getBookById(bookId);
-        // if (book != null) {
-        //     CartItem cartItem = new CartItem(book);
-        //     cart.addCartItem(cartItem);
-        //     cartService.update(sessionId, cart);
-        // }
     }
-
-    // @PutMapping("/add/{bookId}")
-    // public String addToCart(@PathVariable String bookId, HttpServletRequest request) {
-    //     // 세션 ID로부터 장바구니를 가져오고 도서를 추가합니다.
-    //     String sessionId = request.getSession(true).getId();
-    //     Cart cart = cartService.read(sessionId);
-    //
-    //     // 도서 정보를 가져오고 CartItem을 생성하여 장바구니에 추가합니다.
-    //     Book book = bookService.getBookById(bookId);
-    //     if (book != null) {
-    //         CartItem cartItem = new CartItem(book);
-    //         cart.addCartItem(cartItem);
-    //         cartService.update(sessionId, cart);
-    //     }
-    //     // 장바구니에 도서를 추가한 후 장바구니 화면으로 리다이렉션
-    //     return "redirect:/cart/" + request.getSession().getId();
-    // }
 
     @PutMapping("/remove/{bookId}")
     @ResponseStatus(value=HttpStatus.NO_CONTENT)

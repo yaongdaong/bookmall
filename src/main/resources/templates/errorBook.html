@@ -7,13 +7,7 @@
 </head>
 <body>
 
-<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="./">Home</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/common :: header}"/>
 
 <div class="p-5 mb-4 bg-body-tertiary">
     <div class="container">
@@ -29,12 +23,8 @@
         <p th:text="${exception}"></p>
 </div>
 
-<div class="container">
-    <p>
-        <a th:href="@{/books}" class="btn btn-secondary">도서 목록 &raquo;</a>
 
-    </p>
-</div>
+<div th:replace="~{fragments/common :: footer}"/>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>

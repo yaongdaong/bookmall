@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+
+<div th:replace="~{fragments/common :: header}"/>
+
+<div class="p-5 mb-4 bg-body-tertiary">
+    <div class="container">
+        <h1>주문정보</h1>
+    </div>
+</div>
+
+<div class="container">
+    <!--1.저장된 주문 관련 정보의 데이터를 바인딩하려면 modelAttribute 속성을 사용하여 커맨드 객체 order로 설정-->
+    <form th:object="${order}" class="form-horizontal">
+        <div class="well col-md-9 col-md-offset-2" style="background:#fafafe;padding:20px">
+            <div class="text-center">
+                <h1>영수증</h1>
+            </div>
+            <!--2.배송 정보에 대해 저장된 배송 세부 사항인 성명, 우편번호, 주소, 국가명, 배송일 등을 출력-->
+            <div class="row">
+                <div class="col-md-6">
+                    <address>
+                        <strong>배송 주소</strong><br>
+                        성명 : [[${shipping.name}]]<br>
+                        우편번호 : [[${order.shipping.address.zipCode}]]<br>
+                        주소 : [[${order.shipping.address.addressName}]] [[${order.shipping.address.detailName}]]
+                        ([[${order.shipping.address.country}]])<br>
+                    </address>
+                </div>
+                <div class="col-md-6 text-right">
+                    <p><em>배송일 : <span th:text="${#dates.format(order.shipping.date, 'yyyy-MM-dd')}"></span></em></p>
+                </div>
+            </div>
+            <!--3.고객 정보에 저장된 고객 세부 사항인 성명, 우편번호, 주소, 국가명, 전화번호 등을 출력-->
+            <div class="row">
+                <div class="col-md-9">
+                    <address>
+                        <strong>청구 주소</strong><br>
+                        성명 : [[${order.customer.name}]]<br>
+                        우편번호 : [[${order.customer.address.zipCode}]]<br>
+                        주소 : [[${order.customer.address.addressName}]] [[${order.customer.address.detailName}]]
+                        ([[${order.customer.address.country}]])<br>
+                        HP : [[${order.customer.phone}]]<br>
+                    </address>
+                </div>
+            </div>
+            <div class="row">
+                <!--4.주문한 도서 정보로 도서명, 주문 수, 가격, 소계, 총액 등을 출력-->
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>도서</th>
+                        <th>#</th>
+                        <th class="text-center">가격</th>
+                        <th class="text-center">소계</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cartItem : ${order.cart.cartItems}">
+                        <td><em th:text="${cartItem.value.book.name}"></em></td>
+                        <td style="text-align: center" th:text="${cartItem.value.quantity}"></td>
+                        <td class="text-center" th:text="${cartItem.value.unitPrice} + '원'"></td>
+                        <td class="text-center" th:text="${cartItem.value.totalPrice} + '원'"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right"><h5><strong>총액 : </strong></h5></td>
+                        <td class="text-center text-danger"><h5><strong th:text="${order.cart.grandTotal}"></strong>
+                        </h5></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!--5._flowExecutionKey는 웹 플로우에서 플로 순번의 키 값을 가짐. 예를 들어 주문 정보의 뷰 페이지에 대한 요청 URL이
+                http://loclahost:8080/Chapter15/checkout?execution=els3이라면 _flowExecutionKey값을 els3이 됨-->
+                <input type="hidden" name="_flowExecutionKey" th:value="${flowExecutionKey}"/>
+                <!--6.웹 플로우 정의 파일을 설정하여 이전 버튼을 누르면 이벤트 ID가 backToShippinInfo로 되면서 뷰 페이지 orderShippingInfo가 출력됨.
+                주문완료 버튼을 누르면 이벤트 ID가 orderConfirmed로 되면서 confirmOrdeR()메서드를 호출하고,
+                취소 버튼을 누르면 이벤트 ID가 cancel로 되면서 뷰페이지 orderCancelled가 출력됨.-->
+                <button class="btn btn-default" name="_eventId_backToShippingInfo">이전</button>
+                <button type="submit" class="btn btn-success" name="_eventId_orderConfirmed">주문완료</button>
+                <button class="btn btn-default" name="_eventId_cancel">취소</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{fragments/common :: footer}"/>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>

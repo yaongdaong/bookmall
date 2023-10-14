@@ -1,4 +1,4 @@
-package com.example.bookmall.controller;
+package com.example.bookmall.controller.example;
 
 import com.example.bookmall.domain.Member;
 import com.example.bookmall.exception.Example03Exception;
@@ -41,20 +41,20 @@ public class Example04Controller {
         binder.setAllowedFields("id","password","city","sex");
     }
 
-    @GetMapping("/login")
-    public String requestMethod(Model model){
-        return "login";
-    }
+    // @GetMapping("/login")
+    // public String requestMethod(Model model){
+    //     return "login";
+    // }
 
     @GetMapping("/admin")
     public String requestMethod2(Model model){
         return "webpage08_04";
     }
 
-    @GetMapping("/logout")
-    public String logout(Model model){
-        return "login";
-    }
+    // @GetMapping("/logout")
+    // public String logout(Model model){
+    //     return "login";
+    // }
 
     @GetMapping("/exam04_1")
     public void handleRequest(){

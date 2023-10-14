@@ -1,4 +1,4 @@
-package com.example.bookmall.controller;
+package com.example.bookmall.controller.example;
 
 import com.example.bookmall.interceptor.ExampleInterceptor;
 import com.example.bookmall.domain.Member;

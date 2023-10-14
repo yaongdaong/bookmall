@@ -47,6 +47,8 @@ public class BookController {
         // Model 인터페이스는 사용자 요청에 대한 처리 결과를 뷰에 보여 주는 데 필요한 데이터를 Model 객체의 addAttribute() 메서드에 담아 전달합니다.
         // model.addAttibute(속성 이름,속성 값)
         model.addAttribute("bookList", list);
+        model.addAttribute("heading", "도서 목록");
+        model.addAttribute("subheading", "Books List");
         //    5. 뷰이름 반환 : 처리된 결과를 반환하도록 메서드 안에 뷰 이름이나 뷰 이름을 포함한 모델을 설정
         return "books";
     }
@@ -94,6 +96,8 @@ public class BookController {
     public String requestBookById(@RequestParam("id") String bookId, Model model) {
         Book bookById = bookService.getBookById(bookId);
         model.addAttribute("book", bookById);
+        model.addAttribute("heading", "도서 정보");
+        model.addAttribute("subheading", "Book Details");
         return "book";
     }
 
@@ -111,7 +115,10 @@ public class BookController {
 
     @GetMapping("/add")
     // @ModelAttribute를 이용하여 커맨드 객체 이름을 NewBook으로 수정
-    public String requestAddBookForm(@ModelAttribute("NewBook") Book book) {
+    public String requestAddBookForm(@ModelAttribute("NewBook") Book book, Model model)
+    {
+        model.addAttribute("heading","도서 등록");
+        model.addAttribute("subheading","Book Addition");
         return "addBook";
     }
 

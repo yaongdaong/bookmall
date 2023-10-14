@@ -1,6 +1,5 @@
-package com.example.bookmall.controller;
+package com.example.bookmall.controller.example;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.bookmall.domain.Member;
 import com.example.bookmall.domain.Product;
 import jakarta.validation.Valid;

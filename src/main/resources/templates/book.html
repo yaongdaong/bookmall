@@ -9,19 +9,8 @@
 </head>
 <body>
 
-<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="./">Home</a>
-        </div>
-    </div>
-</nav>
-
-<div class="p-5 mb-4 bg-body-tertiary">
-    <div class="container">
-        <h1 class="display-3">도서 정보</h1>
-    </div>
-</div>
+<div th:replace="~{fragments/common :: header}"/>
+<div th:replace="~{fragments/common :: heading}"/>
 
 <div class="container">
     <div class="row">
@@ -43,13 +32,20 @@
             <form name="addForm" method="POST" action="/cart/add/${book.bookId}">
                 <!-- 폼 내용 -->
             </form>
-            <button onclick="addToCart('/cart/add/${book.bookId}')">장바구니에 추가</button>
 
+            <button onclick="addToCart('/cart/add/${book.bookId}')">장바구니에 추가</button>
+            <br>
             <form th:action="@{'/cart/add/' + ${book.bookId}}" method="put">
-                <button class="btn btn-primary" type="submit">도서 주문</button>
+                <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.bookId}')">도서 주문
+                </button>
+                <a class="btn btn-primary" role="button" th:href="@{/cart}"/>장바구니 &raquo;</a>
+                <a class="btn btn-secondary" role="button" th:href="@{/books}"/>도서목록 &raquo;</a></p>
             </form>
+            <br>
             <form th:action="@{'../cart/add/' + ${bookId}}" method="put" id="addToCartForm">
-                <p><button class="btn btn-primary" type="button"  onclick="addToCart('/cart/add/${book.bookId}')">도서주문</button>
+                <p>
+                    <button class="btn btn-primary" type="button" onclick="addToCart('/cart/add/${book.bookId}')">도서주문
+                    </button>
 
                     <a class="btn btn-primary" role="button" th:href="@{/cart}"/>장바구니 &raquo;</a>
                     <a class="btn btn-secondary" role="button" th:href="@{/books}"/>도서목록 &raquo;</a></p>
@@ -59,10 +55,9 @@
     </div>
 </div>
 <hr>
-<footer>
-    <p>&copy;BookMarket</p>
-</footer>
-</div>
+
+<div th:replace="~{fragments/common :: footer}"/>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
