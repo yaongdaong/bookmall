@@ -33,7 +33,7 @@
 <!--                <img th:src="@{'/C:\\upload\\'+${book.getBookId()}.jpeg}" style="width:100%" th:if="${book.getBookImage()==null}"></img>-->
 <!--                <img th:src="@{'/C:\\upload\\'+${book.getBookImage().getOriginalFilename()}}" style="width:100%" th:unless="${book.getBookImage()==null}"></img>-->
 
-                <h3 th:text="${book.name}"></h3>
+                <h3 th:text="${book.bookName}"></h3>
                 <p th:text="${book.author}"></p>
                 <br th:text="${book.publisher}+' | ' +${book.releaseDate}">
                 <p th:text="${#strings.substring(book.description,0,10)}+'...'"></p>

@@ -14,8 +14,8 @@ public class Book implements Serializable {
     @Pattern(regexp="ISBN[1-9]+",message = "{Pattern.NewBook.bookId}")
     private String bookId; // 도서 ID
     // @Size(min=4,max=50,message="유효하지 않은 도서명입니다(최소 4자에서 최대 50자까지 입력하세요).")
-    @Size(min=4,max=50,message="{Size.NewBook.name}")
-    private String name; // 도서명
+    @Size(min=4,max=50,message="{Size.NewBook.bookName}")
+    private String bookName; // 도서명
     // @Min(value=0,message="유효하지 않은 가격입니다(0이상의 수를 입력하세요).")
     @Min(value=0,message="{Min.NewBook.unitPrice}")
     // @Digits(integer=8,fraction=2,message="유효하지 않은 가격입니다(소수점 2자리까지, 8자리까지 입력하세요).")
@@ -38,10 +38,10 @@ private static final long serialVersionUID = -7715651009026349175L;
         super();
     }
 
-    public Book(String bookId, String name, int unitPrice) {
+    public Book(String bookId, String bookName, int unitPrice) {
         super();
         this.bookId = bookId;
-        this.name = name;
+        this.bookName = bookName;
         this.unitPrice = unitPrice;
     }
 
@@ -53,12 +53,12 @@ private static final long serialVersionUID = -7715651009026349175L;
         this.bookId = bookId;
     }
 
-    public String getName() {
-        return name;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public int getUnitPrice() {

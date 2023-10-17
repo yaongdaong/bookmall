@@ -2,17 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Security</title>
+    <title>회원가입</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
-
 <div th:replace="~{fragments/common :: header}"/>
 <div th:replace="~{fragments/common :: heading}"/>
 
 <div class="container">
-    <form class="form-signin" th:action="@{/login}" method="post">
+    <form class="form-signin" th:action="@{/join}" method="post">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2 class="text-center">Please Sign in</h2>
@@ -27,27 +26,15 @@
                     <input type="password" class="form-control" name="password" id="password" placeholder="비밀번호">
                 </div>
                 <div class="mb-3 text-center">
-                    <button type="submit" class="btn btn-primary btn-block">로그인</button>
-                    <a class="btn btn-primary btn-block" href="/join" id="joinButton">회원가입</a>
-
+                    <button type="submit" class="btn btn-primary btn-block">회원가입</button>
                 </div>
+
             </div>
         </div>
     </form>
-
-</div>
-<div class="mb-3 text-center">
-<!--    <a class="btn btn-primary btn-block" href="/join" id="joinButton">회원가입</a>-->
 </div>
 
-<!--<script>-->
-<!--    document.addEventListener('DOMContentLoaded', function() {-->
-<!--        document.getElementById('joinButton').addEventListener('click', function(event) {-->
-<!--            event.preventDefault(); // 클릭 이벤트의 기본 동작(폼 제출)을 방지-->
-<!--            window.location.href = this.getAttribute('href'); // 링크로 이동-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+
 <!--<div class="container">-->
 <!--    <form class="form-signin" th:action="@{/login}" method="post">-->
 <!--        <h6 class="h3 mb-3 font-weight-normal">이루다숲</h6>-->

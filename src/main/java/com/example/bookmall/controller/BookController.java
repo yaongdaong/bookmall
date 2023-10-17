@@ -105,7 +105,7 @@ public class BookController {
     // public String requestAddBookForm(Model model,Book book){
     //     System.out.println("@GetMapping-------------");
     //     System.out.println("도서ID: " + book.getBookId());
-    //     System.out.println("도서명: " + book.getName());
+    //     System.out.println("도서명: " + book.getBookName());
     //     System.out.println("가격: " + book.getUnitPrice());
     //     System.out.println("저자: " + book.getAuthor());
     //     System.out.println("상세정보: " + book.getDescription());
@@ -163,8 +163,8 @@ public class BookController {
     public void initBinder(WebDataBinder binder) {
         // 생성한 unitsInStockValidator 설정
         binder.setValidator(unitsInStockValidator);
-        // 4. <form:input>태그의 file 타입에서 name 속성 이름 bookImage에 바인딩되도록 bookImage를 추가 설정
-        binder.setAllowedFields("bookId", "name", "unitPrice", "author", "description", "publisher", "category", "unitsInStock", "totalPages","releaseDate","condition","bookImage");
+        // 4. <form:input>태그의 file 타입에서 bookName 속성 이름 bookImage에 바인딩되도록 bookImage를 추가 설정
+        binder.setAllowedFields("bookId", "bookName", "unitPrice", "author", "description", "publisher", "category", "unitsInStock", "totalPages","releaseDate","condition","bookImage");
     }
 
     @ExceptionHandler(value = {BookIdException.class})

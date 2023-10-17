@@ -1,6 +1,5 @@
 package com.example.bookmall.domain;
 
-import com.example.bookmall.validator.MemberId;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -14,7 +13,7 @@ public class Member {
         this.memberId = memberId;
     }
 
-    @MemberId
+    // @UserName
     private String memberId;
     private int id;
     private String password;

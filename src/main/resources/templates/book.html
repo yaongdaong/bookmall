@@ -18,7 +18,7 @@
             <img th:src="@{'/images/' + ${book.bookId} + '.jpeg'}">
         </div>
         <div class="col-md-8">
-            <h3 th:text="${book.name}"></h3>
+            <h3 th:text="${book.bookName}"></h3>
             <p th:text="${book.description}"></p>
             <br>
             <p><b>도서코드 : </b><span class="badge bg-info text-dark" th:text="${book.bookId}"/></p>
