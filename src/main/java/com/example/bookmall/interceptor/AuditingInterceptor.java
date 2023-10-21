@@ -13,13 +13,13 @@ import java.util.Calendar;
 public class AuditingInterceptor implements HandlerInterceptor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private String user;
-    private String bookId;
+    private String book_id;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (request.getRequestURI().endsWith("books/add") && request.getMethod().equals("POST")) {
             user = request.getRemoteUser();
-            bookId = request.getParameterValues("bookId")[0];
+            book_id = request.getParameterValues("book_id")[0];
         }
         return true;
     }
@@ -27,7 +27,7 @@ public class AuditingInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         if (request.getRequestURI().endsWith("books/add")) {
-            logger.warn(String.format("신규등록 도서 ID : %s, 접근자 : %s, 접근사각 : %s", bookId, user, getCurrentTime()));
+            logger.warn(String.format("신규등록 도서 ID : %s, 접근자 : %s, 접근사각 : %s", book_id, user, getCurrentTime()));
         }
     }
 

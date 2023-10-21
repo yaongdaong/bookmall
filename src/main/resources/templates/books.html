@@ -12,19 +12,25 @@
 
 <div class="container">
     <div class="row" text-align="center">
-        <tr th:each="book : ${bookList}">
+        <tr th:each="book : ${books}">
+            <div th:each="extension : ${imageExtensions}">
+                <img th:src="@{'/files/' + ${book.book_id} + '.' + ${extension}}"/>
+            </div>
+
             <div class="col-md-4">
-<!--                <img src="/images/${book.bookId}" class="d-block w-100" alt="...">-->
-<!--                <img th:src="@{'data:image/jpeg;base64,'+${image.generateBase64Image()}}" />-->
+<!--                <img th:each="extension : ${{'jpeg', 'jpg', 'png'}}" th:src="@{'/files/' + ${book.book_id} + '.' + ${extension}}" />-->
+<!--                <img th:if="${#strings.contains('jpeg,jpg,png', ${book.imageExtension})}" th:src="@{'/files/' + ${book.book_id} + '.' + ${book.imageExtension}}">-->
+
+                <!--                <img th:src="@{'data:image/jpeg;base64,'+${image.generateBase64Image()}}" />-->
 <!--                <img th:src="@{'/c:\\upload\\' + ${book.getBookId()} + '.jpeg'}" th:if="${book.getBookImage()==null}">-->
 <!--                <img th:if="${book.getBookImage() != null and (book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.png') or book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.jpeg'))}" th:src="@{'file:///C:/upload/' + ${book.getBookImage().getOriginalFilename()}}" alt="Book Image">-->
 <!--                <img th:unless="${book.getBookImage() != null and (book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.png') or book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.jpeg'))}" th:src="@{'file:///C:/upload/' + ${book.getBookId()} + '.png'}" alt="Default Image">-->
-                <th:block th:if="${book.bookImage == null}">
-                    <img th:src="@{'file:/C:/upload/' + book.bookId + '.png'}" style="width:100%"/>
-                </th:block>
-                <th:block th:unless="${book.bookImage == null}">
-                    <img th:src="@{'file:/C:/upload/' + book.bookImage.originalFilename}" style="width:100%"/>
-                </th:block>
+<!--                <th:block th:if="${book.bookImage == null}">-->
+<!--                    <img th:src="@{'file:/C:/upload/' + book.bookId + '.png'}" style="width:100%"/>-->
+<!--                </th:block>-->
+<!--                <th:block th:unless="${book.bookImage == null}">-->
+<!--                    <img th:src="@{'file:/C:/upload/' + book.bookImage.originalFilename}" style="width:100%"/>-->
+<!--                </th:block>-->
 
 
 
@@ -33,12 +39,17 @@
 <!--                <img th:src="@{'/C:\\upload\\'+${book.getBookId()}.jpeg}" style="width:100%" th:if="${book.getBookImage()==null}"></img>-->
 <!--                <img th:src="@{'/C:\\upload\\'+${book.getBookImage().getOriginalFilename()}}" style="width:100%" th:unless="${book.getBookImage()==null}"></img>-->
 
-                <h3 th:text="${book.bookName}"></h3>
+                <h3 th:text="${book.book_name}"></h3>
                 <p th:text="${book.author}"></p>
-                <br th:text="${book.publisher}+' | ' +${book.releaseDate}">
-                <p th:text="${#strings.substring(book.description,0,10)}+'...'"></p>
-                <p th:text="${book.unitPrice}+'원'"></p>
-                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.bookId})}"/>상세정보 &raquo;</a></p>
+                <br th:text="${book.publisher}+' | ' +${book.release_date}">
+<!--                <p th:text="${#strings.substring(book.description,0,10)}+'...'"></p>-->
+                <p th:text="${book.description != null ? #strings.substring(book.description, 0, (book.description.length() < 10 ? book.description.length() : 10)) : ''} + '...'"></p>
+
+                <p th:text="${book.unit_price}+'원'"></p>
+                <a  class="btn btn-primary" th:href="@{'/books/' + ${book.book_id}}">도서 상세 정보</a>
+
+<!--                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.book_id})}"/>상세정보 &raquo;</a></p>-->
+<!--                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.bookId})}"/>상세정보 &raquo;</a></p>-->
             </div>
         </tr>
     </div>

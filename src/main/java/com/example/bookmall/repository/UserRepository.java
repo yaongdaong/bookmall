@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 회원정보 목록 조회
     List<User> findAll();
     // 회원정보 단일 조회
-    Optional<User> findById(Long id);
-
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
+    //
+    // User findByUsername(String username);
 }

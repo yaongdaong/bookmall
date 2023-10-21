@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -25,7 +26,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        User user = userOptional.orElse(null); // Optional이 비어 있는 경우 null을 반환
+
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);

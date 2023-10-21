@@ -46,7 +46,7 @@
                     <td></td>
                     <td></td>
                     <th>총액</th>
-                    <td th:text="${cart.grandTotal}"></td>
+                    <td th:text="${cart != null ? cart.grandTotal : ''}"></td>
                     <td></td>
                 </tr>
             </form>

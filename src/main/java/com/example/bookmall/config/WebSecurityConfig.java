@@ -21,11 +21,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         // .requestMatchers("/json/**").authenticated()
-                        .requestMatchers("/","/join", "/home","/images/**").permitAll()
-                        .requestMatchers("/books/add").hasRole("ADMIN")
+                        .requestMatchers("/","books","books/add","/join", "/home","/images/**","/jquery.min.js").permitAll()
+                        // .requestMatchers("/books/add").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

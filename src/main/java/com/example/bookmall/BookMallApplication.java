@@ -16,12 +16,13 @@ public class BookMallApplication implements WebMvcConfigurer {
         SpringApplication.run(BookMallApplication.class, args);
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 사용자 정의 인터셉터를 등록합니다.
-        registry.addInterceptor(new MonitoringInterceptor());
-        registry.addInterceptor(new ExampleInterceptor());
-        registry.addInterceptor(new AuditingInterceptor());
-    }
+    // @Override
+
+    // public void addInterceptors(InterceptorRegistry registry) {
+    //     // 사용자 정의 인터셉터를 등록합니다.
+    //     registry.addInterceptor(new MonitoringInterceptor());
+    //     registry.addInterceptor(new ExampleInterceptor());
+    //     registry.addInterceptor(new AuditingInterceptor());
+    // }
 
 }
