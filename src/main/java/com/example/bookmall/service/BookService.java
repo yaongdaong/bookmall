@@ -48,4 +48,9 @@ public class BookService {
     public void deleteBook(Long id){
         bookRepository.deleteById(id);
     }
+
+    public Page<Book> searchBooks(String keyword, Pageable pageable) {
+        return bookRepository.findByTitleContainingOrAuthorContaining(keyword, keyword, pageable);
+    }
+
 }

@@ -18,9 +18,9 @@ import java.io.Serializable;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int book_id;
+    private int id;
     private String isbn; // 도서 ID
-    private String book_name; // 도서명
+    private String title; // 도서명
     private int unit_price; // 가격
     private String author; // 저자
     private String description; // 설명

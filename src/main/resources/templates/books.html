@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>도서목록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
 
@@ -12,51 +13,97 @@
 
 <div class="container">
     <div class="row" text-align="center">
+        <form class="row g-3 d-flex justify-content-end" th:action="@{/books}" method="get">
+            <div class="col-auto">
+                <label for="keyword" class="visually-hidden">검색</label>
+                <input type="text" name="keyword" class="form-control" id="keyword">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-3">검색</button>
+            </div>
+        </form>
+<!--        <ul>-->
+<!--            <li th:each="book : ${books}">-->
+<!--                <span th:text="${book.title}"></span>-->
+<!--            </li>-->
+<!--        </ul>-->
+
+
         <tr th:each="book : ${books}">
             <div th:each="extension : ${imageExtensions}">
-                <img th:src="@{'/files/' + ${book.book_id} + '.' + ${extension}}"/>
+                <img th:src="@{'/files/' + ${book.id} + '.' + ${extension}}"/>
             </div>
 
             <div class="col-md-4">
-<!--                <img th:each="extension : ${{'jpeg', 'jpg', 'png'}}" th:src="@{'/files/' + ${book.book_id} + '.' + ${extension}}" />-->
-<!--                <img th:if="${#strings.contains('jpeg,jpg,png', ${book.imageExtension})}" th:src="@{'/files/' + ${book.book_id} + '.' + ${book.imageExtension}}">-->
-
-                <!--                <img th:src="@{'data:image/jpeg;base64,'+${image.generateBase64Image()}}" />-->
-<!--                <img th:src="@{'/c:\\upload\\' + ${book.getBookId()} + '.jpeg'}" th:if="${book.getBookImage()==null}">-->
-<!--                <img th:if="${book.getBookImage() != null and (book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.png') or book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.jpeg'))}" th:src="@{'file:///C:/upload/' + ${book.getBookImage().getOriginalFilename()}}" alt="Book Image">-->
-<!--                <img th:unless="${book.getBookImage() != null and (book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.png') or book.getBookImage().getOriginalFilename().toLowerCase().endsWith('.jpeg'))}" th:src="@{'file:///C:/upload/' + ${book.getBookId()} + '.png'}" alt="Default Image">-->
-<!--                <th:block th:if="${book.bookImage == null}">-->
-<!--                    <img th:src="@{'file:/C:/upload/' + book.bookId + '.png'}" style="width:100%"/>-->
-<!--                </th:block>-->
-<!--                <th:block th:unless="${book.bookImage == null}">-->
-<!--                    <img th:src="@{'file:/C:/upload/' + book.bookImage.originalFilename}" style="width:100%"/>-->
-<!--                </th:block>-->
-
-
-
-
-                <!--                <img src="/C:/upload/${book.getBookId()}.jpeg" alt="Book Image"th:if="${book.getBookImage()==null}">-->
-<!--                <img th:src="@{'/C:\\upload\\'+${book.getBookId()}.jpeg}" style="width:100%" th:if="${book.getBookImage()==null}"></img>-->
-<!--                <img th:src="@{'/C:\\upload\\'+${book.getBookImage().getOriginalFilename()}}" style="width:100%" th:unless="${book.getBookImage()==null}"></img>-->
-
-                <h3 th:text="${book.book_name}"></h3>
+                <h3 th:text="${book.title}"></h3>
                 <p th:text="${book.author}"></p>
                 <br th:text="${book.publisher}+' | ' +${book.release_date}">
-<!--                <p th:text="${#strings.substring(book.description,0,10)}+'...'"></p>-->
+                <!--                <p th:text="${#strings.substring(book.description,0,10)}+'...'"></p>-->
                 <p th:text="${book.description != null ? #strings.substring(book.description, 0, (book.description.length() < 10 ? book.description.length() : 10)) : ''} + '...'"></p>
 
                 <p th:text="${book.unit_price}+'원'"></p>
-                <a  class="btn btn-primary" th:href="@{'/books/' + ${book.book_id}}">도서 상세 정보</a>
+                <a class="btn btn-primary" th:href="@{'/books/' + ${book.id}}">도서 상세 정보</a>
 
-<!--                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.book_id})}"/>상세정보 &raquo;</a></p>-->
-<!--                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.bookId})}"/>상세정보 &raquo;</a></p>-->
+                <!--                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.id})}"/>상세정보 &raquo;</a></p>-->
+                <!--                <p><a class="btn btn-primary" role="button" th:href="@{/books/book(id=${book.bookId})}"/>상세정보 &raquo;</a></p>-->
             </div>
         </tr>
     </div>
     <hr>
 </div>
 
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${1==books.pageable.pageNumber+1}?'disabled'">
+            <a class="page-link" th:href="@{/books(page=${books.pageable.pageNumber-1})}">Previous</a>
+        </li>
+        <li class="page-item" th:classappend="${i==books.pageable.pageNumber+1}?'disabled'"
+            th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a class="page-link" th:href="@{/books(page=${i-1})}" th:text="${i}">1</a>
+        </li>
+        <li class="page-item" th:classappend="${books.totalPages==books.pageable.pageNumber+1}?'disabled'">
+            <a class="page-link" th:href="@{/books(page=${books.pageable.pageNumber+1})}">Next</a>
+        </li>
+    </ul>
+</nav>
+
+
+<!--<div class="pagination">-->
+<!--        <span th:if="${currentPage > 0}">-->
+<!--            <a th:href="@{'/books?page=' + (currentPage - 1)}">Previous</a>-->
+<!--        </span>-->
+<!--    <span th:if="${currentPage < totalPages - 1}">-->
+<!--            <a th:href="@{'/books?page=' + (currentPage + 1)}">Next</a>-->
+<!--        </span>-->
+<!--</div>-->
+
+<!--<div class="pagination">-->
+<!--<span th:if="${page.number > 1}">-->
+<!--            <a th:href="@{'/page/' + ${page.number - 1}}">Previous</a>-->
+<!--        </span>-->
+<!--<span th:each="i : ${#numbers.sequence(1, page.totalPages)}">-->
+<!--            <a th:if="${i} != ${page.number}" th:href="@{'/page/' + ${i}}" th:text="${i}"></a>-->
+<!--            <span th:if="${i} == ${page.number}" th:text="${i}"></span>-->
+<!--        </span>-->
+<!--<span th:if="${page.number < page.totalPages}">-->
+<!--            <a th:href="@{'/page/' + ${page.number + 1}}">Next</a>-->
+<!--        </span>-->
+<!--</div>-->
+
+<!--<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">-->
+<!--    <a th:if="${page != nowPage}" th:href="@{/board/list(page = ${page - 1}, searchKeyword = ${param.searchKeyword})}" th:text="${page}"></a>-->
+<!--    <strong th:if="${page == nowPage}" th:text="${page}" style="color : red"></strong>-->
+<!--</th:block>-->
+
+<!--<form th:action="@{/board/list}" method="get">-->
+<!--    <input type="text" name="searchKeyword">-->
+<!--    <button type="submit">검색</button>-->
+<!--</form>-->
+
+
 <div th:replace="~{fragments/common :: footer}"/>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
 </body>
 </html>

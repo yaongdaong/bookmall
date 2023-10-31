@@ -42,12 +42,12 @@
 
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 control-label"><h1 th:text="#{addBook.form.book_name.label}"/></label>
+                <label class="col-sm-2 control-label"><h1 th:text="#{addBook.form.title.label}"/></label>
                 <div class="col-sm-3">
-                    <input type="text" th:field="*{book_name}" class="form-control"/>
+                    <input type="text" th:field="*{title}" class="form-control"/>
                 </div>
-                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('book_name')}">
-                    <p th:errors="*{book_name}"></p>
+                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('title')}">
+                    <p th:errors="*{title}"></p>
                 </div>
             </div>
             <div class="form-group row">

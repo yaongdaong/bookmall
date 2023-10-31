@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="_csrf" th:content="${_csrf.token}">
     <title>도서 상세 정보</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
@@ -16,16 +18,18 @@
     <div class="row">
         <div class="col-md-4">
             <a th:href="@{${book.file_path}}">이미지</a>
+            <img th:src="@{'/files/' + ${book.id} + '.jpeg'}">
+            <img th:src="@{'/files/' + ${book.id} + '.png'}">
+            <img th:src="@{'/files/' + ${book.id} + '.jpg'}">
+            <!--            <img th:if="${#strings.contains('jpeg,jpg,png', ${book.imageExtension})}" th:src="@{'/files/' + ${book.id} + '.' + ${book.imageExtension}}">-->
 
-            <!--            <img th:if="${#strings.contains('jpeg,jpg,png', ${book.imageExtension})}" th:src="@{'/files/' + ${book.book_id} + '.' + ${book.imageExtension}}">-->
-
-            <!--            <img th:each="extension : ${{'jpeg', 'jpg', 'png'}}" th:src="@{'/files/' + ${book.book_id} + '.' + ${extension}}" />-->
+            <!--            <img th:each="extension : ${{'jpeg', 'jpg', 'png'}}" th:src="@{'/files/' + ${book.id} + '.' + ${extension}}" />-->
         </div>
         <div class="col-md-8">
-            <h3 th:text="${book.book_name}"></h3>
+            <h3 th:text="${book.title}"></h3>
             <p th:text="${book.description}"></p>
             <br>
-            <p><b>도서코드 : </b><span class="badge bg-info text-dark" th:text="${book.book_id}"/></p>
+            <p><b>도서코드 : </b><span class="badge bg-info text-dark" th:text="${book.id}"/></p>
             <p><b>저자 : </b><span th:text="${book.author}"/></p>
             <p><b>출판사 : </b><span th:text="${book.publisher}"/></p>
             <p><b>출판일 : </b><span th:text="${book.release_date}"/></p>
@@ -33,55 +37,84 @@
             <p><b>재고수 : </b><span th:text="${book.units_in_stock}"/></p>
             <h4 th:text="${book.unit_price}+'원'"></h4>
             <br>
-            <!--            <form name="addForm" method="POST" action="/cart/add/${book.book_id}"></form>-->
-            <!-- 폼 내용 -->
-            <!--            <form th:action="@{'/books/' + ${book.book_id}}" method="post">-->
-            <!--                <input type="hidden" name="_method" value="DELETE"/>-->
-            <!--                <input type="submit" value="삭제해라">-->
-            <!--            </form>-->
 
-            <!--            <form th:action="@{'/books/' + ${book.book_id}}" th:method="delete">-->
-            <!--                <input type="submit" value="삭제">-->
-            <!--            </form>-->
-            <a class="btn btn-primary" th:href="@{'/books/update/' + ${book.book_id}}">수정</a>
-            <!--            <a class="btn btn-primary" th:href="@{'/books/' + ${book.book_id}}" th:method="delete">삭제</a>-->
+            <a class="btn btn-primary" th:href="@{'/books/update/' + ${book.id}}">수정</a>
 
-            <!--            <button class="btn btn-primary" th:href="@{'/books/update/'+ ${book.book_id}}">수정</button>-->
-            <button class="btn btn-primary" onclick="addToCart('/cart/add/${book.book_id}')">장바구니에 추가</button>
-            <!--            <button onclick="addToCart('/cart/add/${book.bookId}')">장바구니에 추가</button>-->
             <br>
-            <!--            <form th:action="@{'/cart/add/' + ${book.bookId}}" method="put">-->
-            <form th:action="@{'/cart/add/' + ${book.book_id}}" method="put">
-                <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.book_id}')">도서 주문
+            <form th:action="@{'/cart/add/' + ${book.id}}" method="post">
+                <input type="hidden" name="bookId" th:value="*{book.id}">
+                <input type="number" name="quantity" value="1" min="1">
+                <button type="submit">장바구니추가요</button>
+            </form>
+            <br>
+
+            <form  name="addForm" id="addForm" th:action="@{'/cart/add/' + ${book.id}}" method="put">
+                <button class="btn btn-primary" onclick="addToCart('/cart/add/'+${book.id})">장바구니에 추가</button>
+                <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.id}')">도서 주문
                 </button>
                 <a class="btn btn-primary" role="button" th:href="@{/cart}"/>장바구니 &raquo;</a>
                 <a class="btn btn-secondary" role="button" th:href="@{/books}"/>도서목록 &raquo;</a></p>
             </form>
-            <br>
-            <form th:action="@{'../cart/add/' + ${book.book_id}}" method="put" id="addToCartForm">
-                <!--            <form th:action="@{'../cart/add/' + ${bookId}}" method="put" id="addToCartForm">-->
-                <p>
-                    <button class="btn btn-primary" type="button" onclick="addToCart('/cart/add/${book.book_id}')">도서주문
-                    </button>
-
-                    <a class="btn btn-primary" role="button" th:href="@{/cart}"/>장바구니 &raquo;</a>
-                    <a class="btn btn-secondary" role="button" th:href="@{/books}"/>도서목록 &raquo;</a></p>
+<!--            <form id="deleteForm" th:action="@{'/books/' + ${book.id}}" method="post">-->
+<!--                <input type="hidden" name="_method" value="DELETE"/>-->
+<!--                <input type="submit" value="삭제">-->
+<!--&lt;!&ndash;                <button id="deleteButton">삭제</button>&ndash;&gt;-->
+<!--            </form>-->
+            <form id="deleteForm"  th:action="@{'/books/' + ${book.id}}" method="post">
+                <input type="hidden" name="_method" value="DELETE" />
+                <input class="btn btn-secondary" role="button"  id="deleteButton" type="submit" value="삭제" />
             </form>
-
-            <form id="deleteForm" th:action="@{'/books/' + ${book.book_id}}" method="post">
-                <input type="hidden" name="_method" value="DELETE"/>
-                <input type="submit" value="삭제">
-                <button id="deleteButton">삭제</button>
-
-            </form>
-
         </div>
         </tr>
     </div>
 </div>
 <hr>
+<form id="commentForm">
+    <input type="hidden" id="id" value="${book.id}" />
+    <textarea id="content" rows="4" cols="50" placeholder="댓글을 입력하세요"></textarea>
+    <br />
+    <button type="submit">댓글 작성</button>
+</form>
 
+<div id="comments">
+    <!-- 댓글 목록을 여기에 출력합니다 -->
+</div>
+<div th:replace="~{fragments/common :: footer}"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+var header = $("meta[name='_csrf_header']").attr('content');
+var token = $("meta[name='_csrf']").attr('content');
+
+$(function() {
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+});
+
+    $(document).ready(function () {
+        $("#commentForm").submit(function (event) {
+            event.preventDefault();
+
+            var id = $("#id").val();
+            var content = $("#content").val();
+
+            var commentData = {
+                id: id,
+                content: content
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/comments",
+                contentType: "application/json",
+                data: JSON.stringify(commentData),
+                success: function (comment) {
+                    // 댓글을 출력하거나 목록을 갱신하는 로직을 작성합니다
+                }
+            });
+        });
+    });
+
     const deleteForm = document.getElementById('deleteForm');
     deleteForm.addEventListener('submit', function (event) {
         event.preventDefault(); // 폼 제출 방지
@@ -99,29 +132,60 @@
         });
     });
 
+<!--const deleteForm = document.getElementById('deleteButton');-->
+<!--deleteForm.addEventListener('click', function (event) {-->
+<!--event.preventDefault(); // 폼 제출 방지-->
 
-            document.getElementById('deleteButton').addEventListener('click', function() {
-            // 사용자에게 삭제 확인을 묻는 팝업 창 표시
-            var confirmDelete = confirm('삭제하시겠습니까?');
+<!--// 사용자에게 삭제 확인을 묻는 팝업 창 표시-->
+<!--var confirmDelete = confirm('삭제하시겠습니까?');-->
 
-            if (confirmDelete) {
-            // 사용자가 "예"를 클릭한 경우 서버로 삭제 요청을 보낼 수 있음
-            // 여기에서 서버로의 삭제 요청 등을 처리하면 됨
-            // 예: Ajax 요청을 사용하여 서버로 삭제 요청을 보내고, 응답을 처리
+<!--if (confirmDelete) {-->
+<!--fetch(deleteForm.action, {-->
+<!--method: 'DELETE'-->
+<!--}).then(response => {-->
+<!--if (response.status === 200) {-->
+<!--// 삭제 성공-->
+<!--alert('삭제 성공');-->
+<!--window.location.href = '/books'; // 삭제 후 리다이렉트-->
+<!--} else {-->
+<!--// 삭제 실패-->
+<!--alert('삭제 실패');-->
+<!--}-->
+<!--});-->
+<!--} else {-->
+<!--// 사용자가 "아니오"를 클릭한 경우 아무 작업도 수행하지 않음-->
+<!--alert('삭제 작업이 취소되었습니다');-->
+<!--}-->
+<!--});-->
 
-            // 예제에서는 간단하게 "삭제 요청을 보냈습니다" 메시지를 표시
-            alert('삭제 요청을 보냈습니다');
-            window.location.href = '/books';
-            } else {
-            // 사용자가 "아니요"를 클릭한 경우 아무 작업도 수행하지 않음
-            alert('삭제 작업이 취소되었습니다');
-            }
-            });
+<!--    const deleteForm = document.getElementById('deleteButton');-->
+<!--    deleteForm.addEventListener('click', function (event) {-->
+<!--        event.preventDefault(); // 폼 제출 방지-->
 
+<!--        // 사용자에게 삭제 확인을 묻는 팝업 창 표시-->
+<!--        var confirmDelete = confirm('삭제하시겠습니까?');-->
 
-
+<!--        if (confirmDelete) {-->
+<!--            fetch(deleteForm.action, {-->
+<!--                method: 'DELETE'-->
+<!--            }).then(response => {-->
+<!--                if (response.status === 200) {-->
+<!--                    // 삭제 성공-->
+<!--                    alert('삭제 성공');-->
+<!--                    window.location.href = '/books'; // 삭제 후 리다이렉트-->
+<!--                } else {-->
+<!--                    // 삭제 실패-->
+<!--                    alert('삭제 실패');-->
+<!--                }-->
+<!--            });-->
+<!--        } else {-->
+<!--            // 사용자가 "아니오"를 클릭한 경우 아무 작업도 수행하지 않음-->
+<!--            alert('삭제 작업이 취소되었습니다');-->
+<!--        }-->
+<!--    });-->
 </script>
-<div th:replace="~{fragments/common :: footer}"/>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"

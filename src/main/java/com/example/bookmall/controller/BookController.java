@@ -54,18 +54,36 @@ public class BookController {
     }
 
     @GetMapping
-    public String getAllBooks(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
+    public String getAllBooks(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            Model model
+    ) {
         int pageSize = 10; // 페이지 당 아이템 수
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("id").descending()); // 필요에 따라 정렬 설정
-        Page<Book> books = bookService.findBooksByPage(pageable);
+        Pageable pageable = PageRequest.of(page, pageSize); // 페이지네이션 설정
+
+        Page<Book> books;
+        if (keyword != null && !keyword.isEmpty()) {
+            // 검색어가 제공된 경우, 검색 수행
+            books = bookService.searchBooks(keyword, pageable);
+        } else {
+            // 검색어가 없는 경우, 모든 도서 조회
+            books = bookService.findBooksByPage(pageable);
+        }
+
+        int startPage = Math.max(1, books.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(books.getTotalPages(), books.getPageable().getPageNumber() + 4);
 
         model.addAttribute("books", books);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", books.getTotalPages());
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         model.addAttribute("heading", "도서 목록");
         model.addAttribute("subheading", "Books List");
 
-        return "books";
+        // 검색어를 모델에 추가하여 템플릿에서 사용 가능
+        model.addAttribute("keyword", keyword);
+
+        return "books"; // books 템플릿으로 이동
     }
 
     @GetMapping("/update/{id}")
@@ -79,13 +97,14 @@ public class BookController {
     public String bookUpdate(@PathVariable("id") Long id, Book book, MultipartFile file) throws Exception {
         Book bookTemp = bookService.getBookById(id);
         bookTemp.setIsbn(book.getIsbn());
-        bookTemp.setBook_name(book.getBook_name());
+        bookTemp.setTitle(book.getTitle());
         bookTemp.setUnit_price(book.getUnit_price());
         bookTemp.setAuthor(book.getAuthor());
         bookTemp.setDescription(book.getDescription());
         bookTemp.setPublisher(book.getPublisher());
         bookTemp.setCategory(book.getCategory());
         bookTemp.setUnits_in_stock(book.getUnits_in_stock());
+
         bookTemp.setRelease_date(book.getRelease_date());
         bookTemp.setB_condition(book.getB_condition());
         bookTemp.setFile_name(book.getFile_name());
@@ -96,9 +115,11 @@ public class BookController {
 
 
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @PostMapping("/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return "redirect:/books";
     }
+
+
 }

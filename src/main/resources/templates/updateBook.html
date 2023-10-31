@@ -27,7 +27,7 @@
     <!--커맨드 객체를 NewBook으로 수정-->
     <!--    <form:form modelAttribute="NewBook" class="form-horizontal">-->
     <!--1.    -->
-    <form th:action="@{'/books/update/' + ${book.book_id}}" th:object="${book}" method="post" enctype="multipart/form-data">
+    <form th:action="@{'/books/update/' + ${book.id}}" th:object="${book}" method="post" enctype="multipart/form-data">
         <fieldset>
             <!--컨트롤러에서 전달된 모델 속성 이름 addTitle 값을 출력-->
             <legend th:text="#{addBook.form.subtitle.label}"/>
@@ -42,12 +42,12 @@
 
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 control-label"><h1 th:text="#{addBook.form.book_name.label}"/></label>
+                <label class="col-sm-2 control-label"><h1 th:text="#{addBook.form.title.label}"/></label>
                 <div class="col-sm-3">
-                    <input type="text" th:field="*{book_name}" class="form-control"/>
+                    <input type="text" th:field="*{title}" class="form-control"/>
                 </div>
-                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('book_name')}">
-                    <p th:errors="*{book_name}"></p>
+                <div class="col-sm-6 text-danger" th:if="${#fields.hasErrors('title')}">
+                    <p th:errors="*{title}"></p>
                 </div>
             </div>
             <div class="form-group row">
@@ -110,7 +110,7 @@
                 <label class="col-sm-2 control-label"><h1 th:text="#{addBook.form.book_image.label}"/></label>
                 <div class="col-sm-7">
                     <!--파일을 업로드하려면 멀티파트 요청으로 인코딩 속성인 enctype="multipart/form-data"를 form태그안에 설정-->
-                    <form th:action="@{'/books/update/' + ${book.book_id}}" th:object="${book}" method="post" enctype="multipart/form-data">
+                    <form th:action="@{'/books/update/' + ${book.id}}" th:object="${book}" method="post" enctype="multipart/form-data">
                         <!--이미지 파일을 첨부하려면 form:input태그 안에 type="file"을 설정-->
                         <input type="file" name="file"/>
                     </form>
