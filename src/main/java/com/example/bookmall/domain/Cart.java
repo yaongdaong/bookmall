@@ -20,9 +20,19 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    public Cart(User user){
+    public Cart() {
         this.user = user;
     }
 
     private int total_price;
+
+    public CartItem getCartItemByBook(Book book) {
+        if (this.cartItems != null) {
+            return this.cartItems.stream()
+                    .filter(cartItem -> cartItem.getBook().equals(book))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
+    }
 }

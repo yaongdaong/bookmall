@@ -20,7 +20,7 @@
 //     public void validate(Object target, Errors errors){
 //         // Book 클래스의 우효성 검사 메서드
 //         Book book = (Book)target;
-//         if(book.getUnitPrice()>=10000&book.getUnitsInStock()>99){
+//         if(book.getunit_price()>=10000&book.getUnitsInStock()>99){
 //             // 오류 객체의 속성과 메시지 저장
 //             errors.rejectValue("unitsInStock","UnitsInStockValidator.message");
 //         }

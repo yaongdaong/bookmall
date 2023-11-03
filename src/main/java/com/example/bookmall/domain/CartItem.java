@@ -2,11 +2,13 @@ package com.example.bookmall.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "cartitem")
 public class CartItem {
     @Id

@@ -12,8 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 // 컨트롤러는 메서드를 포함하고 있는 일반적인 자바 클래스가 아니라 웹 브라우저에서 들어온 요청을 처리하는 메서드를 포함하고 있는 특정 자바 클래스
 
 // 컨트롤러로 사용할 자바 클래스에 @Controller 선언
@@ -107,8 +109,8 @@ public class BookController {
 
         bookTemp.setRelease_date(book.getRelease_date());
         bookTemp.setB_condition(book.getB_condition());
-        bookTemp.setFile_name(book.getFile_name());
-        bookTemp.setFile_path(book.getFile_path());
+        bookTemp.setImage_name(book.getImage_name());
+        bookTemp.setImage_path(book.getImage_path());
         bookService.createBook(bookTemp, file);
         return "redirect:/books";
     }

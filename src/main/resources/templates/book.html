@@ -17,13 +17,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <a th:href="@{${book.file_path}}">이미지</a>
-            <img th:src="@{'/files/' + ${book.id} + '.jpeg'}">
-            <img th:src="@{'/files/' + ${book.id} + '.png'}">
-            <img th:src="@{'/files/' + ${book.id} + '.jpg'}">
-            <!--            <img th:if="${#strings.contains('jpeg,jpg,png', ${book.imageExtension})}" th:src="@{'/files/' + ${book.id} + '.' + ${book.imageExtension}}">-->
-
-            <!--            <img th:each="extension : ${{'jpeg', 'jpg', 'png'}}" th:src="@{'/files/' + ${book.id} + '.' + ${extension}}" />-->
+            <img th:src="@{${book.getImage_path()}}" style="width: 240px; height: 300px;">
         </div>
         <div class="col-md-8">
             <h3 th:text="${book.title}"></h3>
@@ -48,21 +42,21 @@
             </form>
             <br>
 
-            <form  name="addForm" id="addForm" th:action="@{'/cart/add/' + ${book.id}}" method="put">
+            <form name="addForm" id="addForm" th:action="@{'/cart/add/' + ${book.id}}" method="put">
                 <button class="btn btn-primary" onclick="addToCart('/cart/add/'+${book.id})">장바구니에 추가</button>
                 <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.id}')">도서 주문
                 </button>
                 <a class="btn btn-primary" role="button" th:href="@{/cart}"/>장바구니 &raquo;</a>
                 <a class="btn btn-secondary" role="button" th:href="@{/books}"/>도서목록 &raquo;</a></p>
             </form>
-<!--            <form id="deleteForm" th:action="@{'/books/' + ${book.id}}" method="post">-->
-<!--                <input type="hidden" name="_method" value="DELETE"/>-->
-<!--                <input type="submit" value="삭제">-->
-<!--&lt;!&ndash;                <button id="deleteButton">삭제</button>&ndash;&gt;-->
-<!--            </form>-->
-            <form id="deleteForm"  th:action="@{'/books/' + ${book.id}}" method="post">
-                <input type="hidden" name="_method" value="DELETE" />
-                <input class="btn btn-secondary" role="button"  id="deleteButton" type="submit" value="삭제" />
+            <!--            <form id="deleteForm" th:action="@{'/books/' + ${book.id}}" method="post">-->
+            <!--                <input type="hidden" name="_method" value="DELETE"/>-->
+            <!--                <input type="submit" value="삭제">-->
+            <!--&lt;!&ndash;                <button id="deleteButton">삭제</button>&ndash;&gt;-->
+            <!--            </form>-->
+            <form id="deleteForm" th:action="@{'/books/' + ${book.id}}" method="post">
+                <input type="hidden" name="_method" value="DELETE"/>
+                <input class="btn btn-secondary" role="button" id="deleteButton" type="submit" value="삭제"/>
             </form>
         </div>
         </tr>
@@ -70,9 +64,9 @@
 </div>
 <hr>
 <form id="commentForm">
-    <input type="hidden" id="id" value="${book.id}" />
+    <input type="hidden" id="id" value="${book.id}"/>
     <textarea id="content" rows="4" cols="50" placeholder="댓글을 입력하세요"></textarea>
-    <br />
+    <br/>
     <button type="submit">댓글 작성</button>
 </form>
 
@@ -183,8 +177,8 @@ $(function() {
 <!--            alert('삭제 작업이 취소되었습니다');-->
 <!--        }-->
 <!--    });-->
-</script>
 
+</script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

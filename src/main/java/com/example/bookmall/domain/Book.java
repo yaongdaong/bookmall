@@ -29,6 +29,6 @@ public class Book {
     private Long units_in_stock;  // 재고 수
     private String release_date; // 출판일(월/년)
     private String b_condition; // 신규 도서 또는 중고 도서 또는 전자책
-    private String file_name;
-    private String file_path;
+    private String image_name; // 이미지 파일명
+    private String image_path; // 이미지 조회 경로
 }

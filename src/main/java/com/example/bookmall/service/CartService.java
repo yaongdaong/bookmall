@@ -5,7 +5,6 @@ import com.example.bookmall.domain.Book;
 import com.example.bookmall.domain.Cart;
 import com.example.bookmall.domain.CartItem;
 import com.example.bookmall.domain.User;
-import com.example.bookmall.repository.CartItemRepository;
 import com.example.bookmall.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,96 +13,130 @@ import java.util.Optional;
 
 @Service
 public class CartService {
+
+    //@Autowired
+    //private UserService userService;
+    //
+    //@Autowired
+    //private BookService bookService;
+    //@Autowired
+    //private CartItemRepository cartItemRepository;
+
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private CartItemRepository cartItemRepository;
+    public Cart getCartByUser(User user) {
+        return cartRepository.findByUser(user);
+    }
 
-    // 장바구니 생성 및 아이템 추가
+    public CartItem getCartItemByBook(Cart cart, Book book) {
+        return cart.getCartItemByBook(book);
+    }
+
     public void addItemToCart(Optional<User> userOptional, Book book, int quantity) {
-        // 유저의 장바구니를 가져오거나 생성
-        userOptional.ifPresent(user -> {
-            Cart cart = user.getCart();
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Cart cart = getCartByUser(user);
             if (cart == null) {
-                cart = new Cart(user);
+                cart = new Cart();
+                cart.setUser(user);
+                cartRepository.save(cart);
             }
 
-            // 장바구니에 동일한 책이 이미 있는지 확인
-
-            CartItem existingItem = cart.getCartItems().stream()
-                    .filter(item -> item.getBook().getId() == book.getId())
-                    .findFirst()
-                    .orElse(null);
-
+            CartItem existingItem = getCartItemByBook(cart, book);
             if (existingItem != null) {
-                // 동일한 책이 이미 장바구니에 있으면 수량을 증가
                 existingItem.setQuantity((existingItem.getQuantity() + quantity));
             } else {
-                // 새로운 아이템을 장바구니에 추가
                 CartItem newItem = new CartItem(book, quantity);
+                newItem.setCart(cart);
                 cart.getCartItems().add(newItem);
             }
 
-            // cart_id를 cart_item에 추가
-            for (CartItem cartItem : cart.getCartItems()){
-                cartItem.setCart(cart);
-            }
-            // 주문할 가격 업데이트 (가격은 책의 가격에 수량을 곱한 값
-            updateTotalPrice(cart);
-
-            // 장바구니를 데이터베이스에 저장
+            updateTotal_price(cart);
             cartRepository.save(cart);
-            cartItemRepository.saveAll(cart.getCartItems());
-        });
-        }
-
-
-    // 아이템을 장바구니에서 제거
-    public void removeItemFromCart(User user, Book book, int quantity) {
-        Cart cart = user.getCart();
-        if (cart != null) {
-            CartItem existingItem = cart.getCartItems().stream()
-                    .filter(item -> item.getBook().getId() == book.getId())
-                    .findFirst()
-                    .orElse(null);
-
-            if (existingItem != null) {
-                if (existingItem.getQuantity() > quantity) {
-                    // 수량을 감소
-                    existingItem.setQuantity(existingItem.getQuantity() - quantity);
-                } else {
-                    // 수량이 0이면 아이템을 장바구니에서 제거
-                    cart.getCartItems().remove(existingItem);
-                }
-                // 주문할 가격 업데이트
-                updateTotalPrice(cart);
-
-                // 장바구니를 데이터베이스에 저장
-            }
         }
     }
-
-
     // 장바구니의 총 가격 업데이트
-    private void updateTotalPrice(Cart cart) {
-        int total = 0;
-        for (CartItem item : cart.getCartItems()) {
-            total += item.getBook().getUnit_price() * item.getQuantity();
-        }
+    public void updateTotal_price(Cart cart) {
+        int total = cart.getCartItems().stream()
+                .mapToInt(item -> item.getBook().getUnit_price() * item.getQuantity())
+                .sum();
         cart.setTotal_price(total);
     }
 
-    // 장바구니 삭제
-    public void clearCart(User user) {
-        // 사용자의 장바구니를 비우는 로직 추가
-        Cart cart = user.getCart();
-        if (cart != null) {
-            cart.getCartItems().clear();
-            cart.setTotal_price(0);
-            cartRepository.save(cart);
-        }
+//    public Cart createCart(User user){
+//        Cart cart = new Cart();
+//        cart.setUser(user);
+//        return cart;
+//    }
+//
+//
+//    // 아이템 추가
+//    public void addItemToCart(String username, Long bookId, int quantity) {
+//        Optional<User> userOptional = userService.findByUsername(username);
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            // 책 정보 가져오기
+//            Book book = bookService.getBookById(bookId);
+//            // 사용자의 장바구니 확인
+//            Cart cart = user.getCart();
+//            if (cart == null) {
+//                // 장바구니가 없으면 새로 생성
+//                cart = createCart(user);
+//                user.setCart(cart);
+//            }
+//            // 동일한 책이 이미 장바구니에 있는지 확인
+//            CartItem existingItem = cart.getCartItemByBook(book);
+//            if (existingItem != null) {
+//                // 동일한 책이 이미 장바구니에 있으면 수량을 증가
+//                existingItem.setQuantity(existingItem.getQuantity() + quantity);
+//            } else {
+//                // 새로운 아이템을 장바구니에 추가
+//                CartItem newItem = new CartItem(book, quantity);
+//                newItem.setCart(cart);
+//                cart.getCartItems().add(newItem);
+//            }
+//            // 주문할 가격 업데이트( 가격은 책의 가격에 수량을 곱한 값)
+//            updateTotal_price(cart);
+//            // 장바구니를 데이터베이스에 저장
+//            cartRepository.save(cart);
+//        }
+//
+//    }
+//
+//
+//
+//    // 아이템을 장바구니에서 제거
+//    public void removeItemFromCart(Cart cart, Book book, int quantity) {
+//        // 아이템을 장바구니에서 제거 로직 추가
+//        CartItem existingItem = cart.getCartItemByBook(book);
+//        if (existingItem != null) {
+//            if (existingItem.getQuantity() > quantity) {
+//                // 수량을 감소
+//                existingItem.setQuantity(existingItem.getQuantity() - quantity);
+//            } else {
+//                // 수량이 0이면 아이템을 장바구니에서 제거
+//                cart.getCartItems().remove(existingItem);
+//            }
+//            // 주문할 가격 업데이트
+//            updateTotal_price(cart);
+//
+//            // 장바구니를 데이터베이스에 저장
+//            cartRepository.save(cart);
+//        }
+//    }
+//
+//
 
-    }
-
+//
+//    // 장바구니 삭제
+//    public void clearCart(Cart cart) {
+//        // 사용자의 장바구니를 비우는 로직 추가
+//        cart.getCartItems().clear();
+//        cart.setTotal_price(0);
+//        cartRepository.save(cart);
+//    }
+//
+//}
+//
 }
