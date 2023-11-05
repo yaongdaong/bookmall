@@ -9,8 +9,12 @@ import com.example.bookmall.service.BookService;
 import com.example.bookmall.service.CartService;
 import com.example.bookmall.service.UserService;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +27,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping(value = "/cart")
 public class CartController {
+    private static final Logger logger = LoggerFactory.getLogger(CartController.class);
     @Autowired
     private CartService cartService;
 
@@ -34,31 +39,74 @@ public class CartController {
 
     @Autowired
     private CartRepository cartRepository;
-
+    //@GetMapping("/items")
+    //public String viewCart(Model model, Authentication authentication) {
+    //    if (authentication != null && authentication.isAuthenticated()) {
+    //        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    //        Optional<User> user = userService.findByUsername(userDetails.getUsername());
+    //
+    //        List<CartItem> cartItems = cartService.getCartItemsByUser(user);
+    //        model.addAttribute("cartItems", cartItems);
+    //
+    //        int total = cartService.updateTotal_price();
+    //        model.addAttribute("totalPrice", total);
+    //    }
+    //
+    //    return "cart";
+    //}
     @GetMapping
-    public String cart(Model model, Principal principal) {
-        System.out.println("cart method called");
-        // 현재 로그인한 사용자의 정보 가져오기
+    public String showCart(Model model, Principal principal){
         String username = principal.getName();
-        Optional<User> userOptional = userService.findByUsername(username);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            // 사용자의 장바구니 정보 가져오기
-            Cart cart = user.getCart();
-            if (cart != null) {
-                // 장바구니 아이템 목록 가져오기
-                List<CartItem> cartItems = cart.getCartItems();
-
-                // 모델에 데이터 추가
-                model.addAttribute("cartItems", cartItems);
-                model.addAttribute("totalPrice", cart.getTotal_price());
-
-            }
-        }
-
+        Optional<User> user = userService.findByUsername(username);
+        List<CartItem> items = cartService.getCartItemsByUser(user);
+        model.addAttribute("items",items);
+        //String username = principal.getName();
+        //Optional<User> userOptional = userService.findByUsername(username);
+        //
+        //if(userOptional.isPresent()) {
+        //    User user = userOptional.get();
+        //    Cart cart = user.getCart();
+        //    if (cart != null){
+        //        List<CartItem> cartItems = cart.getCartItems();
+        //        //List<CartItem> cartItems = cartService.getCartItemsByUser(user);
+        //        model.addAttribute("cartItems",cartItems);
+        //
+        //        logger.debug("Cart items: {}",cartItems);
+        //        System.out.println("cartItems"+cartItems);
+        //        // 총 가격 정보를 뷰로 전달
+        //        int total_price = cart.getTotal_price();
+        //
+        //        model.addAttribute("totalPrice",total_price);
+        //        logger.debug("Total price: {}", total_price);
+        //        System.out.println(" total_price"+ total_price);
+        //    }
+        //}
         return "cart";
     }
+    //@GetMapping
+    //public String cart(Model model, Principal principal) {
+    //    System.out.println("cart method called");
+    //    // 현재 로그인한 사용자의 정보 가져오기
+    //    String username = principal.getName();
+    //    Optional<User> userOptional = userService.findByUsername(username);
+    //
+    //    if (userOptional.isPresent()) {
+    //        User user = userOptional.get();
+    //        // 사용자의 장바구니 정보 가져오기
+    //        Cart cart = user.getCart();
+    //        if (cart != null) {
+    //            // 장바구니 아이템 목록 가져오기
+    //            List<CartItem> cartItems = cart.getCartItems();
+    //
+    //            // 모델에 데이터 추가
+    //            model.addAttribute("cartItems", cart.getCartItems());
+    //            model.addAttribute("totalPrice", cart.getTotal_price());
+    //
+    //        }
+    //    }
+    //
+    //    return "cart";
+    //}
 
     @PostMapping("/add/{id}")
     public String addItemToCart(@PathVariable Long id, @RequestParam int quantity, Principal principal) {
@@ -67,7 +115,7 @@ public class CartController {
         Optional<User> user = userService.findByUsername(username);
         Book book = bookService.getBookById(id);
         cartService.addItemToCart(user, book, quantity);
-        return "redirect/cart"; // 장바구니 페이지로 리다이렉트
+        return "redirect:/cart"; // 장바구니 페이지로 리다이렉트
     }
 
     //@GetMapping("/clear")
