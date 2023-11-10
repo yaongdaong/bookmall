@@ -96,22 +96,8 @@ public class BookController {
     }
 
     @PostMapping("/update/{id}")
-    public String bookUpdate(@PathVariable("id") Long id, Book book, MultipartFile file) throws Exception {
-        Book bookTemp = bookService.getBookById(id);
-        bookTemp.setIsbn(book.getIsbn());
-        bookTemp.setTitle(book.getTitle());
-        bookTemp.setUnit_price(book.getUnit_price());
-        bookTemp.setAuthor(book.getAuthor());
-        bookTemp.setDescription(book.getDescription());
-        bookTemp.setPublisher(book.getPublisher());
-        bookTemp.setCategory(book.getCategory());
-        bookTemp.setUnits_in_stock(book.getUnits_in_stock());
-
-        bookTemp.setRelease_date(book.getRelease_date());
-        bookTemp.setB_condition(book.getB_condition());
-        bookTemp.setImage_name(book.getImage_name());
-        bookTemp.setImage_path(book.getImage_path());
-        bookService.createBook(bookTemp, file);
+    public String bookUpdate(@PathVariable("id") Long id, @ModelAttribute Book updatedBook, @RequestParam("file") MultipartFile file) throws Exception {
+       Book book = bookService.updateBook(id,updatedBook,file);
         return "redirect:/books";
     }
 

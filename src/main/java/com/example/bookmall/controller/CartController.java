@@ -59,7 +59,17 @@ public class CartController {
         String username = principal.getName();
         Optional<User> user = userService.findByUsername(username);
         List<CartItem> items = cartService.getCartItemsByUser(user);
+        int totalPrice = 0;
+        for (CartItem cartItem : items) {
+            totalPrice += cartItem.getBook().getUnit_price() * cartItem.getQuantity();
+        }
         model.addAttribute("items",items);
+        model.addAttribute("totalPrice",totalPrice);
+        model.addAttribute("heading", "장바구니");
+        model.addAttribute("subheading", "Your Cart");
+        return "cart";
+    }
+
         //String username = principal.getName();
         //Optional<User> userOptional = userService.findByUsername(username);
         //
@@ -81,8 +91,7 @@ public class CartController {
         //        System.out.println(" total_price"+ total_price);
         //    }
         //}
-        return "cart";
-    }
+
     //@GetMapping
     //public String cart(Model model, Principal principal) {
     //    System.out.println("cart method called");
@@ -117,6 +126,20 @@ public class CartController {
         cartService.addItemToCart(user, book, quantity);
         return "redirect:/cart"; // 장바구니 페이지로 리다이렉트
     }
+
+
+    //@PostMapping("/update")
+    //public String updateToCart(Cart cart){
+    //    cartService.modifyQuantity(cart);
+    //    return "redirect:/cart";
+    //}
+    //
+    //
+    //@PostMapping("/cart/delete")
+    //public String deleteToCart(Cart cart){
+    //    cartService.deleteCart(cart.getId());
+    //    return "redirect:/cart";
+    //}
 
     //@GetMapping("/clear")
     //public String clearCart(Principal principal) {

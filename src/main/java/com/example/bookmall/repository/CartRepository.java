@@ -6,9 +6,12 @@
   import org.springframework.data.jpa.repository.JpaRepository;
   import org.springframework.stereotype.Repository;
 
+  import java.util.Optional;
+
   // 장바구니 정보를 관리하는 퍼시스턴스 계층
   @Repository
   public interface CartRepository extends JpaRepository<Cart,Long> {
       Cart findByUser(User user);
+      //Optional<CartItem> findById(Long CartItemId);
 
   }

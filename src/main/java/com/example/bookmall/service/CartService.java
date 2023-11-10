@@ -68,11 +68,12 @@ public class CartService {
         }
 
         cart.setTotal_price(total);
+    }
         //int total = cart.getCartItems().stream()
         //        .mapToInt(item -> item.getBook().getUnit_price() * item.getQuantity())
         //        .sum();
         //cart.setTotal_price(total);
-    }
+
 
     //public List<CartItem> userCartView(Cart cart){
     //        List<Cart> cartItems = cartRepository.findAll();
