@@ -39,23 +39,9 @@ public class CartController {
 
     @Autowired
     private CartRepository cartRepository;
-    //@GetMapping("/items")
-    //public String viewCart(Model model, Authentication authentication) {
-    //    if (authentication != null && authentication.isAuthenticated()) {
-    //        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    //        Optional<User> user = userService.findByUsername(userDetails.getUsername());
-    //
-    //        List<CartItem> cartItems = cartService.getCartItemsByUser(user);
-    //        model.addAttribute("cartItems", cartItems);
-    //
-    //        int total = cartService.updateTotal_price();
-    //        model.addAttribute("totalPrice", total);
-    //    }
-    //
-    //    return "cart";
-    //}
+
     @GetMapping
-    public String showCart(Model model, Principal principal){
+    public String showCart(Model model, Principal principal) {
         String username = principal.getName();
         Optional<User> user = userService.findByUsername(username);
         List<CartItem> items = cartService.getCartItemsByUser(user);
@@ -63,34 +49,109 @@ public class CartController {
         for (CartItem cartItem : items) {
             totalPrice += cartItem.getBook().getUnit_price() * cartItem.getQuantity();
         }
-        model.addAttribute("items",items);
-        model.addAttribute("totalPrice",totalPrice);
+        model.addAttribute("items", items);
+        model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("heading", "장바구니");
         model.addAttribute("subheading", "Your Cart");
         return "cart";
     }
 
-        //String username = principal.getName();
-        //Optional<User> userOptional = userService.findByUsername(username);
+
+    @PostMapping("/add/{id}")
+    public String addItemToCart(@PathVariable Long id, @RequestParam int quantity, Principal principal) {
+        // 사용자 정보 가져오기
+        String username = principal.getName();
+        Optional<User> user = userService.findByUsername(username);
+        Book book = bookService.getBookById(id);
+        cartService.addItemToCart(user, book, quantity);
+        return "redirect:/cart"; // 장바구니 페이지로 리다이렉트
+    }
+
+
+    @PostMapping("/update/{id}")
+    @ResponseBody
+    public String modifyQuantity(@PathVariable Long id,@RequestParam Long bookId, @RequestParam int quantity){
+        Optional<Cart> cartOptional = cartRepository.findById(id);
+
+        if (cartOptional.isPresent()) {
+            Cart cart = cartOptional.get();
+            Book book = bookService.getBookById(bookId);
+            cartService.modifyQuantity(cart, book, quantity);
+            return "success";
+        } else {
+            return "error";
+        }
+        //Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found for id: "+id));
         //
-        //if(userOptional.isPresent()) {
-        //    User user = userOptional.get();
-        //    Cart cart = user.getCart();
-        //    if (cart != null){
-        //        List<CartItem> cartItems = cart.getCartItems();
-        //        //List<CartItem> cartItems = cartService.getCartItemsByUser(user);
-        //        model.addAttribute("cartItems",cartItems);
+        //cartService.modifyQuantity(cart, book, quantity);
         //
-        //        logger.debug("Cart items: {}",cartItems);
-        //        System.out.println("cartItems"+cartItems);
-        //        // 총 가격 정보를 뷰로 전달
-        //        int total_price = cart.getTotal_price();
-        //
-        //        model.addAttribute("totalPrice",total_price);
-        //        logger.debug("Total price: {}", total_price);
-        //        System.out.println(" total_price"+ total_price);
+        //if (cart != null) {
+        //    Book book = null;
+        //    for (CartItem cartItem : cart.getCartItems()) {
+        //        if (cartItem.getBook() != null && cartItem.getBook().getId() == book.getId()) {
+        //            book = cartItem.getBook();
+        //            break;
+        //        }
         //    }
+        //    if (book != null) {
+        //        cartService.modifyQuantity(cart, book, quantity);
+        //        return "success";
+        //    } else {
+        //        System.out.println("에러: ID=" + id + ", Quantity=" + quantity + " (Book not found)");
+        //        return "error";
+        //    }
+        //} else {
+        //    System.out.println("에러: ID=" + id + ", Quantity=" + quantity + " (Cart not found)");
+        //    return "error";
         //}
+        //Cart cart = cartRepository.findById(id).orElse(null);
+        //Book book = bookService.getBookById(id);
+        //if (cart != null && book != null){
+        //    cartService.modifyQuantity(cart, book, quantity);
+        //    return "success";
+        //} else {
+        //    System.out.println("에러: ID=" + id + ", Quantity=" + quantity);
+        //    return "error";
+        //}
+    }
+    //public String updateCartItem(@RequestParam Long itemId, @RequestParam int newQuantity){
+    //    CartItem cartItem = cartService.findCartItemById(itemId);
+    //    if (cartItem != null){
+    //        cartItem.setQuantity(newQuantity);
+    //        cartService.updateCartItem(cartItem);
+    //        return "success";
+    //    } else {
+    //        return "error";
+    //    }
+    //}
+
+    //public String updateToCart(Cart cart, Book book, int quantity) {
+    //    cartService.modifyQuantity(cart, book, quantity);
+    //    return "redirect:/cart";
+    //}
+
+}
+    //String username = principal.getName();
+    //Optional<User> userOptional = userService.findByUsername(username);
+    //
+    //if(userOptional.isPresent()) {
+    //    User user = userOptional.get();
+    //    Cart cart = user.getCart();
+    //    if (cart != null){
+    //        List<CartItem> cartItems = cart.getCartItems();
+    //        //List<CartItem> cartItems = cartService.getCartItemsByUser(user);
+    //        model.addAttribute("cartItems",cartItems);
+    //
+    //        logger.debug("Cart items: {}",cartItems);
+    //        System.out.println("cartItems"+cartItems);
+    //        // 총 가격 정보를 뷰로 전달
+    //        int total_price = cart.getTotal_price();
+    //
+    //        model.addAttribute("totalPrice",total_price);
+    //        logger.debug("Total price: {}", total_price);
+    //        System.out.println(" total_price"+ total_price);
+    //    }
+    //}
 
     //@GetMapping
     //public String cart(Model model, Principal principal) {
@@ -116,25 +177,21 @@ public class CartController {
     //
     //    return "cart";
     //}
-
-    @PostMapping("/add/{id}")
-    public String addItemToCart(@PathVariable Long id, @RequestParam int quantity, Principal principal) {
-        // 사용자 정보 가져오기
-        String username = principal.getName();
-        Optional<User> user = userService.findByUsername(username);
-        Book book = bookService.getBookById(id);
-        cartService.addItemToCart(user, book, quantity);
-        return "redirect:/cart"; // 장바구니 페이지로 리다이렉트
-    }
-
-
-    //@PostMapping("/update")
-    //public String updateToCart(Cart cart){
-    //    cartService.modifyQuantity(cart);
-    //    return "redirect:/cart";
+    //@GetMapping("/items")
+    //public String viewCart(Model model, Authentication authentication) {
+    //    if (authentication != null && authentication.isAuthenticated()) {
+    //        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    //        Optional<User> user = userService.findByUsername(userDetails.getUsername());
+    //
+    //        List<CartItem> cartItems = cartService.getCartItemsByUser(user);
+    //        model.addAttribute("cartItems", cartItems);
+    //
+    //        int total = cartService.updateTotal_price();
+    //        model.addAttribute("totalPrice", total);
+    //    }
+    //
+    //    return "cart";
     //}
-    //
-    //
     //@PostMapping("/cart/delete")
     //public String deleteToCart(Cart cart){
     //    cartService.deleteCart(cart.getId());
@@ -172,4 +229,3 @@ public class CartController {
     //}
 
 
-}

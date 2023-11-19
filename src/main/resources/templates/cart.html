@@ -7,6 +7,8 @@
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.1.js"
             integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="_csrf" th:content="${_csrf.token}">
 
 </head>
 <body>
@@ -38,7 +40,7 @@
         </thead>
         <tbody>
         <!-- Iterate through cartItems and display book information -->
-        <tr th:each="cartItem : ${items}" class="cart_info">
+        <tr th:each="cartItem : ${items}" class="cart_info" th:data-book-id="${cartItem.book.id}" th:data-cart-id="${cartItem.cart.id}">
             <td>
                 <input class="form-check-input check" type="checkbox" value="" checked="checked">
             </td>
@@ -47,6 +49,7 @@
                     th:text="${cartItem.book.title}"></span>
             </td>
             <!--            <td th:text="${cartItem.book.title}"></td>-->
+<!--            <td th:text="${cartItem.book.unit_price}" class="uniPrice">원</td>-->
             <td th:text="${#numbers.formatInteger(cartItem.book.unit_price,3,'COMMA')+'원'}"></td>
             <td>
                 <div class="table_text_align_center quantity_div">
@@ -54,8 +57,9 @@
                     <button class="plus">+</button>
                     <button class="minus">-</button>
                 </div>
-                <a class="quantity_modify_btn" >변경</a>
+                <button class="quantity_modify_btn">변경</button>
             </td>
+<!--            <td class="totalPrice"></td>-->
             <td data-th-text="${#numbers.formatInteger(cartItem.book.unit_price * cartItem.quantity,3,'COMMA')+'원'}"
                 class="totalPrice"></td>
             <td>
@@ -70,13 +74,20 @@
     <button type="button" class="btn btn-danger ml-auto">주문하기</button>
 
 </div>
-<!--수량조절-->
-<form action="/cart/update" method="post" class="quantity_update_form">
-    <input type="hidden" name="cartId" class="update_cartId">
-    <input type="hidden" name="quantity" class="update_quantity">
-    <input type="hidden" name="memberId" value="${member.memberId}">
-</form>
-
+<!--&lt;!&ndash;수량조절&ndash;&gt;-->
+<!--<form th:each="item : ${items}" th:action="@{/cart/update}" method="post">-->
+<!--    <input type="hidden" name="cart.id" th:value="${item.cart.id}" />-->
+<!--    <input type="hidden" name="book.id" th:value="${item.book.id}" />-->
+<!--    <input type="number" name="quantity" th:value="${item.quantity}" />-->
+<!--    <button type="submit">Update</button>-->
+<!--</form>-->
+<!--<form th:action="@{/cart/update}" th:object="${cartItem}" method="post" class="quantity_update_form">-->
+<!--    <input type="hidden" th:value="*{quantity}" class="form-control"/>-->
+<!--</form>-->
+<!--<form action="/cart/update" method="post" class="quantity_update_form">-->
+<!--    <input type="hidden" name="cartId" class="update_cartId">-->
+<!--    <input type="hidden" name="quantity" class="update_quantity">-->
+<!--    <input type="hidden" name="memberId" value="${member.memberId}">-->
 <!--삭제-->
 <form action="/cart/delete" method="post" class="quantity_delete_form">
     <input type="hidden" name="cartId" class="delete_cartId">
@@ -91,11 +102,64 @@
 <div th:replace="~{fragments/common :: footer}"/>
 
 <script>
-    $(document).ready(function(){
-        <!--종합정보삽입-->
-        setTotalInfo();
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+  $(document).ready(function () {
+    // 종합정보삽입
+    setTotalInfo();
+/* 수량버튼 */
+<!--   let totalPrice = 0;-->
 
+$(".plus").on("click", function () {
+    let quantityInput = $(this).parent("div").find("input");
+    let quantity = parseInt(quantityInput.val()); // 값을 정수로 변환
+    quantityInput.val(++quantity);
+<!--    updateTotalPrice();-->
+});
+
+$(".minus").on("click", function () {
+    let quantityInput = $(this).parent("div").find("input");
+    let quantity = parseInt(quantityInput.val());
+    if (quantity > 1) {
+        quantityInput.val(--quantity);
+<!--        updateTotalPrice();-->
+    }
+});
+
+
+    $(".quantity_modify_btn").on("click", function () {
+        console.log("버튼 클릭됨!");
+        var clickedBtn = $(this); // 'this' 값을 변수에 저장
+        updateCartItem(clickedBtn.closest("tr"), clickedBtn);
     });
+
+    function updateCartItem(row, clickedBtn){
+        console.log("카트 아이템 업데이트 중...");
+        var quantity = row.find(".quantity").val();
+        var bookId = row.data("book-id");
+        var cartId = row.data("cart-id");
+        console.log("Book ID:", bookId);
+        console.log("cart ID:", cartId);
+        console.log("quantity:", quantity);
+        $.ajax({
+            type: "POST",
+            url: "/cart/update/"+cartId,
+            data: {
+                bookId: bookId,
+                quantity: quantity,
+                cartId: cartId
+            },
+            success: function (data) {
+                console.log("성공! 데이터:", data);
+                clickedBtn.closest("tr").find(".totalPrice").text(data.totalPriceFormatted);
+            },
+            error: function (error) {
+                console.log("Error updating cart item:", error);
+            }
+        });
+    };
+});
 
     <!--개별체크-->
     $(".check").on("change",function(){
@@ -131,26 +195,33 @@
 <!--총수량-->
     $("#totalQuantityDisplay").text(quantity);
     }
-/* 수량버튼 */
-    $(".plus").on("click",function(){
-        let quantity = $(this).parent("div").find("input").val();
-        $(this).parent("div").find("input").val(++quantity);
-    });
-    $(".minus").on("click",function(){
-        let quantity = $(this).parent("div").find("input").val();
-        if (quantity > 1) {
-            $(this).parent("div").find("input").val(--quantity);
-        }
-    });
 
+<!--    $(".totalPrice").text(`${formatInteger(calculatedTotalPrice, 3, 'COMMA')}원`);-->
+
+<!--    totalPrice += parseInt($(element).find(".totalPrice").text().replace('원', '').replace(',', ''));-->
 /* 수량 수정 버튼 */
-$(".quantity_modify_btn").on("click",function(){
-    let cartId = $(this).data("cartId");
-    let quantity = $(this).parent("td").find("input").val();
-    $(".update_cartId").val(cartId);
-    $(".update_quantity").val(quantity);
-    $(".quantity_update_form").submit();
-});
+<!--$(".quantity_modify_btn").on("click",function(){-->
+<!--    let cartId = $(this).data("cartId");-->
+<!--    let quantity = $(this).parent("td").find("input").val();-->
+<!--    $(".update_cartId").val(cartId);-->
+<!--    $(".update_quantity").val(quantity);-->
+<!--    $(".quantity_update_form").submit();-->
+<!--});-->
+
+// 총 가격을 업데이트하는 함수
+<!--function updateTotalPrice() {-->
+<!--&lt;!&ndash;    let unitPrice = parseInt($(".unitPrice").val());&ndash;&gt;-->
+<!--    let unitPrice = parseInt("${cartItem.book.unit_price}");-->
+<!--    let quantity = parseInt($(".quantity").val()); // 괄호가 빠진 부분 수정-->
+<!--    let calculatedTotalPrice = unitPrice * quantity;-->
+<!--     if (!isNaN(calculatedTotalPrice)) {-->
+<!--        // 숫자를 통화 형식으로 포맷팅-->
+<!--        let formattedTotalPrice = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(calculatedTotalPrice);-->
+<!--        $(".totalPrice").text(formattedTotalPrice);-->
+<!--    } else {-->
+<!--        $(".totalPrice").text("가격 오류");-->
+<!--    }-->
+<!--}-->
 /* 장바구니 삭제 버튼 */
 $(".delete_btn").on("click", function(e){
 	e.preventDefault();
@@ -181,6 +252,41 @@ $(".order_btn").on("click",function(){
 </script>
 
 <script>
+
+<!--    $(".plus").on("click", function () {-->
+<!--        var quantityInput = $(this).siblings(".quantity");-->
+<!--        var currentQuantity = parseInt(quantityInput.val());-->
+<!--        quantityInput.val(currentQuantity + 1);-->
+<!--        updateCartItem($(this).closest("tr"),$(this));-->
+<!--    });-->
+
+<!--    $(".minus").on("click", function () {-->
+<!--        var quantityInput = $(this).siblings(".quantity");-->
+<!--        var currentQuantity = parseInt(quantityInput.val());-->
+<!--        if (currentQuantity > 1) {-->
+<!--            quantityInput.val(currentQuantity - 1);-->
+<!--            updateCartItem($(this).closest("tr"),$(this));-->
+<!--        }-->
+<!--    });-->
+
+<!--        $(".quantity_modify_btn").on("click",function(){-->
+<!--            totalPrice += parseInt($(element).find(".totalPrice").text().replace('원', '').replace(',', ''));-->
+<!--            quantity += parseInt($(element).find(".quantity").val());-->
+
+<!--            $.ajax({-->
+<!--                type: "POST",-->
+<!--                url: "/cart/update",-->
+<!--                data: {totalPrice, quantity},-->
+<!--                success: function(data) {-->
+<!--                    setTotalInfo($(".cart_info"));-->
+<!--                },-->
+<!--                error: function (error) {-->
+<!--                    console.error("Error:", error);-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+
+<!--    });-->
 
 <!--    // JavaScript 코드-->
 <!--    document.addEventListener("DOMContentLoaded", function () {-->

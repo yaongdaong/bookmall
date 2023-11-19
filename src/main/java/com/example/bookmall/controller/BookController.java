@@ -97,7 +97,7 @@ public class BookController {
 
     @PostMapping("/update/{id}")
     public String bookUpdate(@PathVariable("id") Long id, @ModelAttribute Book updatedBook, @RequestParam("file") MultipartFile file) throws Exception {
-       Book book = bookService.updateBook(id,updatedBook,file);
+       bookService.updateBook(id,updatedBook,file);
         return "redirect:/books";
     }
 
