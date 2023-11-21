@@ -29,50 +29,85 @@
             <p><b>출판일 : </b><span th:text="${book.release_date}"/></p>
             <p><b>분류 : </b><span th:text="${book.category}"/></p>
             <p><b>재고수 : </b><span th:text="${book.units_in_stock}"/></p>
-            <h4 th:text="${book.unit_price}+'원'"></h4>
-            <br>
-
-            <a class="btn btn-primary" th:href="@{'/books/update/' + ${book.id}}">수정</a>
-
+            <p><b>가격 : </b><span th:text="${book.unit_price}+'원'"></span></p>
             <br>
             <form th:action="@{'/cart/add/' + ${book.id}}" method="post">
                 <input type="hidden" name="bookId" th:value="*{book.id}">
                 <input type="number" name="quantity" value="1" min="1">
-                <button type="submit">장바구니추가요</button>
+                <button class="btn btn-success" type="submit">장바구니</button>
             </form>
+            <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.id}')">주문</button>
+            <button class="btn btn-secondary" th:href="@{/books}">도서목록 &raquo;</button>
             <br>
+            <a class="btn btn-warning" th:href="@{'/books/update/' + ${book.id}}">수정</a>
+            <!--            <button class="btn btn-danger deleteBook" th:data-book-id="${book.id}">삭제</button>-->
+            <!--            <button class="btn btn-danger" onclick="deleteBook(${book.id})">삭제</button>-->
 
-            <form name="addForm" id="addForm" th:action="@{'/cart/add/' + ${book.id}}" method="put">
-                <button class="btn btn-primary" onclick="addToCart('/cart/add/'+${book.id})">장바구니에 추가</button>
-                <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.id}')">도서 주문
-                </button>
-                <a class="btn btn-primary" role="button" th:href="@{/cart}"/>장바구니 &raquo;</a>
-                <a class="btn btn-secondary" role="button" th:href="@{/books}"/>도서목록 &raquo;</a></p>
+            <form id="deleteForm" th:action="@{'/books/deleteBook/' + ${book.id}}" method="post">
+                <input type="hidden" name="bookId" th:value="*{book.id}">
+                <button type="submit" class="btn btn-danger deleteBook">삭제</button>
             </form>
             <!--            <form id="deleteForm" th:action="@{'/books/' + ${book.id}}" method="post">-->
             <!--                <input type="hidden" name="_method" value="DELETE"/>-->
-            <!--                <input type="submit" value="삭제">-->
-            <!--&lt;!&ndash;                <button id="deleteButton">삭제</button>&ndash;&gt;-->
+
             <!--            </form>-->
-            <form id="deleteForm" th:action="@{'/books/' + ${book.id}}" method="post">
-                <input type="hidden" name="_method" value="DELETE"/>
-                <input class="btn btn-secondary" role="button" id="deleteButton" type="submit" value="삭제"/>
-            </form>
         </div>
         </tr>
     </div>
 </div>
-<hr>
-<form id="commentForm">
-    <input type="hidden" id="id" value="${book.id}"/>
-    <textarea id="content" rows="4" cols="50" placeholder="댓글을 입력하세요"></textarea>
+
+<br>
+<div class="container">
+    <input type="hidden" id="id" th:value="${book.id}"/>
+    <div class="form-floating">
+        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
+                  style="height: 100px"></textarea>
+        <label for="floatingTextarea2">댓글을 입력하세요</label>
+        <button class="btn btn-secondary comment" type="button">댓글 작성</button>
+    </div>
     <br/>
-    <button type="submit">댓글 작성</button>
-</form>
+
+    <!--    <button class="btn btn-secondary commentUpdate" type="button">댓글 수정</button>-->
+    <!--    <button class="btn btn-secondary commentDelete" type="button">댓글 삭제</button>-->
+</div>
 
 <div id="comments">
-    <!-- 댓글 목록을 여기에 출력합니다 -->
+    <div class="container text-center">
+        <table class="table subjectTable">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>내용</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+            </thead>
+            <tbody id="commentTableBody">
+            <tr th:each="comment : ${comments}" th:data-comment-id="${comment.id}">
+                <td th:text="${comment.id}"></td>
+                <td th:text="${comment.content}"></td>
+                <td th:text="${comment.user.username}"></td>
+                <td th:text="${comment.createdAt}"></td>
+                <td>
+                    <span th:if="${#authentication.principal.username} == ${comment.user.username}">
+                    <button type="button" class="btn btn-primary updateComment">댓글수정</button>
+                    <button type="button" class="btn btn-primary deleteComment">댓글삭제</button>
+                    </span>
+                    <!--                    <button th:if="${comment.user.username == username}" type="button" class="btn btn-primary updateComment">댓글수정</button>-->
+                    <!--                    <button th:if="${comment.user.username == #authentication.principal?.username}" type="button" class="btn btn-primary updateComment">댓글수정</button>-->
+                </td>
+                <td>
+                    <!--                    <button th:if="${comment.user.username == username}" type="button" class="btn btn-primary deleteComment">댓글삭제</button>-->
+                    <!--                    <button th:if="${comment.user.username == #authentication.principal?.username}" type="button" class="btn btn-primary deleteComment">댓글삭제</button>-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 <div th:replace="~{fragments/common :: footer}"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -85,46 +120,133 @@ $(function() {
     });
 });
 
+
+<!--&lt;!&ndash;책 삭제&ndash;&gt;-->
+<!--$(".deleteBook").on("click", function(e) {-->
+<!--    console.log("삭제클릭");-->
+<!--    var clickedBtn = $(this);-->
+<!--    var row = clickedBtn.closest("tr");-->
+<!--    console.log("삭제중")-->
+<!--    var bookId = row.data("book-id");-->
+<!--    console.log("bookId"+bookId);-->
+<!--    $.ajax({-->
+<!--        url: "/books/deleteBook/"+bookId,-->
+<!--        type: "post",-->
+<!--        data: {"bookId": bookId},-->
+<!--        success: function (data) {-->
+<!--            clickedBtn.closest("tr").remove();-->
+<!--            console.log("삭제완료");-->
+<!--        }-->
+<!--    });-->
+<!--});-->
+
+<!--댓글작성자만 수정,삭제 버튼이 보이게-->
+ /*<![CDATA[*/
+
+var isLoggedIn = /*[[${username != null}]]*/ false;
+var username = /*[[${username}]]*/ '';
+
+
+<!--$(document).ready(function() {-->
+
+<!--    console.log("로그인됨?"+isLoggedIn);-->
+<!--    console.log("유저네임:"+username);-->
+
+<!--    if (isLoggedIn) {-->
+<!--        $(".updateComment").show();-->
+<!--        $(".deleteComment").show();-->
+<!--    } else {-->
+<!--        $(".updateComment").hide();-->
+<!--        $(".deleteComment").hide();-->
+<!--    }-->
+
+<!--    /*]]>*/-->
+<!--});-->
+
+
+<!--댓글 쓰기-->
+
     $(document).ready(function () {
-        $("#commentForm").submit(function (event) {
+        $(".comment").click(function (event) {
             event.preventDefault();
 
-            var id = $("#id").val();
-            var content = $("#content").val();
-
+            var bookId = $("#id").val();
+            var content = $("#floatingTextarea2").val();
+            console.log("아이디:"+bookId);
             var commentData = {
-                id: id,
+                bookId: bookId,
                 content: content
             };
 
             $.ajax({
                 type: "POST",
-                url: "/api/comments",
+                url: "/books/comments/add/"+bookId,
                 contentType: "application/json",
                 data: JSON.stringify(commentData),
                 success: function (comment) {
                     // 댓글을 출력하거나 목록을 갱신하는 로직을 작성합니다
+<!--                    getCommentsAndRenderList(id);-->
                 }
             });
         });
     });
 
-    const deleteForm = document.getElementById('deleteForm');
-    deleteForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // 폼 제출 방지
-        fetch(deleteForm.action, {
-            method: 'DELETE'
-        }).then(response => {
-            if (response.status === 200) {
-                // 삭제 성공
-                // 원하는 동작 수행
-                window.location.href = '/books';
-            } else {
-                // 삭제 실패
-                // 에러 처리
-            }
-        });
-    });
+<!--function getCommentsAndRenderList(bookId) {-->
+<!--    var bookId = $("#id").val();-->
+<!--            var content = $("#floatingTextarea2").val();-->
+<!--            console.log("댓글리스트책아이디:"+bookId);-->
+<!--            var comments = {-->
+<!--                bookId: bookId,-->
+<!--                content: content-->
+<!--            };-->
+<!--    // 댓글 목록을 가져오는 Ajax 호출-->
+<!--    $.ajax({-->
+<!--        type: "GET",-->
+<!--        url: "/books/comments/" + bookId,-->
+<!--        success: function (comments) {-->
+<!--            // 댓글 목록을 출력하는 로직-->
+<!--            renderComments(comments);-->
+<!--        }-->
+<!--    });-->
+<!--}-->
+
+<!--function renderComments(comments) {-->
+<!--    &lt;!&ndash;comments를 이용하여 댓글 목록을 화면에 출력하는 로직을 작성&ndash;&gt;-->
+<!--    var commentsContainer = $("#commentTableBody");-->
+<!--    commentsContainer.empty(); // 기존 내용을 지우고 새로운 목록을 추가-->
+
+<!--    // comments를 이용하여 댓글 목록을 화면에 추가하는 로직-->
+<!--    for (var i = 0; i < comments.length; i++) {-->
+<!--        var comment = comments[i];-->
+<!--        var commentHtml = "<tr>";-->
+<!--        commentHtml += "<td>" + comment.id + "</td>";-->
+<!--        commentHtml += "<td>" + comment.content + "</td>";-->
+<!--        commentHtml += "<td>" + comment.user_id + "</td>";-->
+<!--        commentHtml += "<td>" + comment.created_at + "</td>";-->
+<!--        commentHtml += "<td><button type='button' class='btn btn-primary updateComment'>댓글수정</button></td>";-->
+<!--        commentHtml += "<td><button type='button' class='btn btn-primary deleteComment'>댓글삭제</button></td>";-->
+<!--        commentHtml += "</tr>";-->
+<!--        commentsContainer.append(commentHtml);-->
+<!--    }-->
+<!--}-->
+
+
+<!--    const deleteForm = document.getElementById('deleteForm');-->
+<!--    deleteForm.addEventListener('submit', function (event) {-->
+<!--        event.preventDefault(); // 폼 제출 방지-->
+<!--        fetch(deleteForm.action, {-->
+<!--            method: 'DELETE'-->
+<!--        }).then(response => {-->
+<!--            if (response.status === 200) {-->
+<!--                // 삭제 성공-->
+<!--                // 원하는 동작 수행-->
+<!--                window.location.href = '/books';-->
+<!--            } else {-->
+<!--                // 삭제 실패-->
+<!--                // 에러 처리-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
 
 <!--const deleteForm = document.getElementById('deleteButton');-->
 <!--deleteForm.addEventListener('click', function (event) {-->
@@ -177,6 +299,11 @@ $(function() {
 <!--            alert('삭제 작업이 취소되었습니다');-->
 <!--        }-->
 <!--    });-->
+
+
+
+
+
 
 </script>
 

@@ -81,7 +81,9 @@ public class CartController {
         } else {
             return "error";
         }
-        //Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found for id: "+id));
+    }
+
+    //Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found for id: "+id));
         //
         //cartService.modifyQuantity(cart, book, quantity);
         //
@@ -113,6 +115,20 @@ public class CartController {
         //    System.out.println("에러: ID=" + id + ", Quantity=" + quantity);
         //    return "error";
         //}
+
+    @PostMapping("/delete/{id}")
+    @ResponseBody
+    public String deleteItem(@PathVariable Long id,@RequestParam Long bookId){
+        Optional<Cart> cartOptional = cartRepository.findById(id);
+
+        if (cartOptional.isPresent()) {
+            Cart cart = cartOptional.get();
+            Book book = bookService.getBookById(bookId);
+            cartService.deleteItem(cart, book);
+            return "success";
+        } else {
+            return "error";
+        }
     }
     //public String updateCartItem(@RequestParam Long itemId, @RequestParam int newQuantity){
     //    CartItem cartItem = cartService.findCartItemById(itemId);

@@ -4,14 +4,13 @@
  import lombok.AllArgsConstructor;
  import lombok.Builder;
  import lombok.Data;
- import lombok.NoArgsConstructor;
 
- import java.util.Date;
+ import java.time.LocalDateTime;
+ import java.time.temporal.ChronoUnit;
 
  @Entity
  @Data
  @AllArgsConstructor
- @NoArgsConstructor
  @Builder
  public class Comment {
      @Id
@@ -22,8 +21,14 @@
      @JoinColumn(name = "book_id")
      private Book book;
 
+     @ManyToOne
+     @JoinColumn(name = "user_id")
+     private User user;
+
      private String content;
 
-     @Temporal(TemporalType.TIMESTAMP)
-     private Date createdDate;
+     private LocalDateTime createdAt;
+     public Comment() {
+         this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+     }
  }

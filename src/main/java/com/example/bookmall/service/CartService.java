@@ -6,7 +6,6 @@ import com.example.bookmall.domain.Cart;
 import com.example.bookmall.domain.CartItem;
 import com.example.bookmall.domain.User;
 import com.example.bookmall.repository.CartRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,16 +59,7 @@ public class CartService {
         }
     }
 
-    // 장바구니의 총 가격 업데이트
-    public void updateTotal_price(Cart cart) {
-        int total = 0;
 
-        for (CartItem item : cart.getCartItems()) {
-            total += item.getBook().getUnit_price() * item.getQuantity();
-        }
-
-        cart.setTotal_price(total);
-    }
         //int total = cart.getCartItems().stream()
         //        .mapToInt(item -> item.getBook().getUnit_price() * item.getQuantity())
         //        .sum();
@@ -92,11 +82,46 @@ public class CartService {
         return new ArrayList<>();
     }
 
+    // 장바구니의 총 가격 업데이트
+    public int updateTotal_price(Cart cart) {
+        int total = 0;
+
+        for (CartItem item : cart.getCartItems()) {
+            total += item.getBook().getUnit_price() * item.getQuantity();
+        }
+
+        cart.setTotal_price(total);
+        return total;
+    }
 
     public void modifyQuantity(Cart cart, Book book, int quantity) {
         // 아이템을 장바구니에서 제거 로직 추가
         CartItem existingItem = cart.getCartItemByBook(book);
         existingItem.setQuantity(quantity);
+        // 주문할 가격 업데이트
+        updateTotal_price(cart);
+        // 장바구니를 데이터베이스에 저장
+        cartRepository.save(cart);
+    }
+        //if (existingItem != null) {
+        //    if (existingItem.getQuantity() > quantity) {
+        //        // 수량을 감소
+        //        existingItem.setQuantity(existingItem.getQuantity() - quantity);
+        //    } else {
+        //        // 수량이 0이면 아이템을 장바구니에서 제거
+        //        cart.getCartItems().remove(existingItem);
+        //    }
+        //    // 주문할 가격 업데이트
+        //    updateTotal_price(cart);
+        //
+        //    // 장바구니를 데이터베이스에 저장
+        //    cartRepository.save(cart);
+        //}
+
+    public void deleteItem(Cart cart, Book book) {
+        // 아이템을 장바구니에서 제거 로직 추가
+        CartItem existingItem = cart.getCartItemByBook(book);
+        cart.getCartItems().remove(existingItem);
         // 주문할 가격 업데이트
         updateTotal_price(cart);
         // 장바구니를 데이터베이스에 저장

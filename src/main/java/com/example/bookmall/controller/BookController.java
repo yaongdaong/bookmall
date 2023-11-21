@@ -1,18 +1,25 @@
 package com.example.bookmall.controller;
 
 import com.example.bookmall.domain.Book;
+import com.example.bookmall.domain.Comment;
+import com.example.bookmall.domain.User;
 import com.example.bookmall.service.BookService;
+import com.example.bookmall.service.CommentService;
+import com.example.bookmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +36,12 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/add")
     public String addBook(Model model) {
         Book book = new Book(); // 또는 적절한 방식으로 Book 객체를 가져오세요
@@ -38,17 +51,23 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public String createBook(Book book, MultipartFile file)throws Exception {
+    public String createBook(Book book, MultipartFile file) throws Exception {
         bookService.createBook(book, file);
         return "redirect:/books";
     }
 
 
     @GetMapping("/{id}")
-    public String getBookById(@PathVariable Long id, Model model) {
+    public String getBookById(@PathVariable Long id, Model model, Principal principal) {
+        String username = principal.getName();
+        //String username = userDetails != null ? userDetails.getUsername() : null;
+        //model.addAttribute("username",username);
+        System.out.println("username:"+username);
+        //Optional<User> user = userService.findByUsername(username);
         Book book = bookService.getBookById(id);
         model.addAttribute("book", book);
-
+        List<Comment> comments = commentService.getCommentsByBookId(id);
+        model.addAttribute("comments", comments);
         String[] imageExtensions = {"jpeg", "png", "jpg"};
         model.addAttribute("imageExtensions", imageExtensions);
 
@@ -73,8 +92,8 @@ public class BookController {
             books = bookService.findBooksByPage(pageable);
         }
 
-        int startPage = Math.max(1, books.getPageable().getPageNumber() - 4);
-        int endPage = Math.min(books.getTotalPages(), books.getPageable().getPageNumber() + 4);
+        int startPage = Math.max(1, books.getPageable().getPageNumber() - 5);
+        int endPage = Math.min(books.getTotalPages(), books.getPageable().getPageNumber() + 5);
 
         model.addAttribute("books", books);
         model.addAttribute("startPage", startPage);
@@ -91,23 +110,26 @@ public class BookController {
     @GetMapping("/update/{id}")
     public String updateBook(@PathVariable Long id, Model model) {
         Book book = bookService.getBookById(id);
-        model.addAttribute("book",book);
+        model.addAttribute("book", book);
         return "updateBook";
     }
 
     @PostMapping("/update/{id}")
     public String bookUpdate(@PathVariable("id") Long id, @ModelAttribute Book updatedBook, @RequestParam("file") MultipartFile file) throws Exception {
-       bookService.updateBook(id,updatedBook,file);
+        bookService.updateBook(id, updatedBook, file);
         return "redirect:/books";
     }
 
 
-
-    @PostMapping("/{id}")
+    @PostMapping("/deleteBook/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return "redirect:/books";
     }
 
-
+    //@PostMapping("/comment/{id}")
+    //public String comment(@PathVariable Long id) {
+    //    bookService.deleteBook(id);
+    //    return "redirect:/books";
+    //}
 }
