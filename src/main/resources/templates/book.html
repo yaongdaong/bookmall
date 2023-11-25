@@ -38,7 +38,6 @@
             </form>
             <button class="btn btn-primary" type="submit" onclick="addToCart('/cart/add/${book.id}')">주문</button>
             <button class="btn btn-secondary" th:href="@{/books}">도서목록 &raquo;</button>
-            <br>
             <a class="btn btn-warning" th:href="@{'/books/update/' + ${book.id}}">수정</a>
             <!--            <button class="btn btn-danger deleteBook" th:data-book-id="${book.id}">삭제</button>-->
             <!--            <button class="btn btn-danger" onclick="deleteBook(${book.id})">삭제</button>-->
@@ -60,15 +59,12 @@
 <div class="container">
     <input type="hidden" id="id" th:value="${book.id}"/>
     <div class="form-floating">
-        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
+        <textarea class="form-control addComment" placeholder="Leave a comment here" id="floatingTextarea2"
                   style="height: 100px"></textarea>
         <label for="floatingTextarea2">댓글을 입력하세요</label>
         <button class="btn btn-secondary comment" type="button">댓글 작성</button>
     </div>
     <br/>
-
-    <!--    <button class="btn btn-secondary commentUpdate" type="button">댓글 수정</button>-->
-    <!--    <button class="btn btn-secondary commentDelete" type="button">댓글 삭제</button>-->
 </div>
 
 <div id="comments">
@@ -91,16 +87,10 @@
                 <td th:text="${comment.user.username}"></td>
                 <td th:text="${comment.createdAt}"></td>
                 <td>
-                    <span th:if="${#authentication.principal.username} == ${comment.user.username}">
-                    <button type="button" class="btn btn-primary updateComment">댓글수정</button>
-                    <button type="button" class="btn btn-primary deleteComment">댓글삭제</button>
-                    </span>
-                    <!--                    <button th:if="${comment.user.username == username}" type="button" class="btn btn-primary updateComment">댓글수정</button>-->
-                    <!--                    <button th:if="${comment.user.username == #authentication.principal?.username}" type="button" class="btn btn-primary updateComment">댓글수정</button>-->
+                    <button th:if="${#authentication.principal.username} == ${comment.user.username}" type="button" class="btn btn-primary updateComment">댓글수정</button>
                 </td>
                 <td>
-                    <!--                    <button th:if="${comment.user.username == username}" type="button" class="btn btn-primary deleteComment">댓글삭제</button>-->
-                    <!--                    <button th:if="${comment.user.username == #authentication.principal?.username}" type="button" class="btn btn-primary deleteComment">댓글삭제</button>-->
+                    <button th:if="${#authentication.principal.username} == ${comment.user.username}" type="button" class="btn btn-danger deleteComment">댓글삭제</button>
                 </td>
             </tr>
             </tbody>
@@ -110,6 +100,9 @@
 
 <div th:replace="~{fragments/common :: footer}"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    var authenticatedUsername = /*[[${#authentication.principal.username}]]*/ '';
+</script>
 <script>
 var header = $("meta[name='_csrf_header']").attr('content');
 var token = $("meta[name='_csrf']").attr('content');
@@ -120,6 +113,129 @@ $(function() {
     });
 });
 
+<!--댓글 쓰기-->
+    $(document).ready(function () {
+        $(".comment").click(function (event) {
+            event.preventDefault();
+
+            var bookId = $("#id").val();
+            var content = $("#floatingTextarea2").val();
+
+            if (!content) {
+                alert("내용을 작성해야 합니다");
+                return;
+            }
+            console.log("아이디:"+bookId);
+            var commentData = {
+                bookId: bookId,
+                content: content
+            };
+            $.ajax({
+                type: "POST",
+                url: "/comment/add/"+bookId,
+                contentType: "application/json",
+                data: JSON.stringify(commentData),
+                success: function (comment) {
+                    console.log("COMMENT"+comment);
+                    console.log("COMMENT JSON", JSON.stringify(comment));
+                    // 댓글을 출력하거나 목록을 갱신하는 로직을 작성합니다
+                    getCommentsAndRenderList(bookId);
+                }
+            });
+        });
+    });
+
+<!--댓글목록갱신-->
+
+function getCommentsAndRenderList(bookId) {
+<!--    var bookId = $("#id").val();-->
+    console.log("댓글책아이디:"+bookId);
+    $.ajax({
+        type: "GET",
+        url: "/comment/list/" + bookId,
+        success: function (comments) {
+            var addComment = $(".addComment");
+            addComment.val('');
+            var tableBody = $("#commentTableBody");
+            tableBody.empty();
+            console.log("받은 댓글 데이터:"+comments);
+            $.each(comments, function (index, comment) {
+                var row = "<tr th:data-comment-id='" + comment.id + "'>" +
+                          "<td>" + comment.id + "</td>" +
+                          "<td>" + comment.content + "</td>" +
+                          "<td>" + comment.user.username + "</td>" +
+                          "<td>" + comment.createdAt + "</td>" +
+                          "<td>" +
+                          "<button th:if='" + authenticatedUsername + " == " + comment.user.username + "' type='button' class='btn btn-primary updateComment'>댓글수정</button>" +
+                          "</td>"+
+                          "<td>"+
+                          "<button th:if='" + authenticatedUsername + " == " + comment.user.username + "' type='button' class='btn btn-primary deleteComment'>댓글삭제</button>"+
+                          "</td>";
+                tableBody.prepend($(row));
+            });
+        }
+    });
+}
+
+<!--댓글 수정-->
+$(".updateComment").on("click", function(e) {
+    console.log("댓업 버튼 클릭됨");
+    updateComment($(this).closest("tr"));
+});
+
+function updateComment(row) {
+    console.log("댓업중");
+    var commentId = row.data("comment-id");
+    console.log("업데이트댓글아이디"+commentId);
+
+    var updatedContent = prompt("댓글 내용을 수정하세요:", row.find("td:eq(1)").text());
+
+    if (updatedContent !== null) {
+        $.ajax({
+            type: "POST",
+            url: "/comment/update/" + commentId,
+            data : JSON.stringify({ content: updatedContent }),
+            success: function(updatedComment) {
+                console.log("댓글 수정 완료:", updatedComment);
+                getCommentsAndRenderList($("#id").val());
+            },
+            error: function (error) {
+                console.error("댓글 수정 에러:", error);
+            }
+        });
+    }
+}
+
+<!--댓글 삭제-->
+$(".deleteComment").on("click", function(e) {
+    console.log("댓삭 버튼 클릭됨");
+    var clickedBtn = $(this);
+    deleteComment(clickedBtn.closest("tr"), clickedBtn);
+});
+
+function deleteComment(row, clickedBtn){
+    console.log("댓삭중");
+    var commentId = row.data("comment-id");
+    console.log("commentId:"+commentId);
+    $.ajax({
+        type: "POST",
+        url: "/comment/delete/" +commentId,
+        data: {
+            commentId:commentId
+        },
+        success: function(data) {
+            console.log("삭제 성공");
+            clickedBtn.closest("tr").remove();
+        },
+        error: function(error) {
+            console.log("에러발생:"+error);
+        }
+    });
+};
+
+
+    <!--    <button class="btn btn-secondary commentUpdate" type="button">댓글 수정</button>-->
+    <!--    <button class="btn btn-secondary commentDelete" type="button">댓글 삭제</button>-->
 
 <!--&lt;!&ndash;책 삭제&ndash;&gt;-->
 <!--$(".deleteBook").on("click", function(e) {-->
@@ -140,11 +256,7 @@ $(function() {
 <!--    });-->
 <!--});-->
 
-<!--댓글작성자만 수정,삭제 버튼이 보이게-->
- /*<![CDATA[*/
 
-var isLoggedIn = /*[[${username != null}]]*/ false;
-var username = /*[[${username}]]*/ '';
 
 
 <!--$(document).ready(function() {-->
@@ -163,34 +275,11 @@ var username = /*[[${username}]]*/ '';
 <!--    /*]]>*/-->
 <!--});-->
 
+<!--&lt;!&ndash;댓글작성자만 수정,삭제 버튼이 보이게&ndash;&gt;-->
+<!-- /*<![CDATA[*/-->
 
-<!--댓글 쓰기-->
-
-    $(document).ready(function () {
-        $(".comment").click(function (event) {
-            event.preventDefault();
-
-            var bookId = $("#id").val();
-            var content = $("#floatingTextarea2").val();
-            console.log("아이디:"+bookId);
-            var commentData = {
-                bookId: bookId,
-                content: content
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "/books/comments/add/"+bookId,
-                contentType: "application/json",
-                data: JSON.stringify(commentData),
-                success: function (comment) {
-                    // 댓글을 출력하거나 목록을 갱신하는 로직을 작성합니다
-<!--                    getCommentsAndRenderList(id);-->
-                }
-            });
-        });
-    });
-
+<!--var isLoggedIn = /*[[${username != null}]]*/ false;-->
+<!--var username = /*[[${username}]]*/ '';-->
 <!--function getCommentsAndRenderList(bookId) {-->
 <!--    var bookId = $("#id").val();-->
 <!--            var content = $("#floatingTextarea2").val();-->

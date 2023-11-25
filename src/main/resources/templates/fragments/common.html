@@ -25,16 +25,22 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/cart}">장바구니</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" th:if="${not #authorization.expression('isAuthenticated()')}">
                     <a class="nav-link" th:href="@{/login}">로그인</a>
+                </li>
+                <li class="nav-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <a class="nav-link" th:href="@{/admin}">관리자</a>
+                </li>
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}" >
+                    <a class="nav-link" th:href="@{/logout}">로그아웃</a>
                 </li>
             </ul>
         </div>
-        <div class="float-end">
-            <form th:action="@{/logout}" method="post">
-                <input type="submit" class="btn btn-primary" value="로그아웃">
-            </form>
-        </div>
+<!--        <div class="float-end">-->
+<!--            <form th:action="@{/logout}" method="post">-->
+<!--                <input type="submit" class="btn btn-primary" value="로그아웃">-->
+<!--            </form>-->
+<!--        </div>-->
     </nav>
 </div>
 

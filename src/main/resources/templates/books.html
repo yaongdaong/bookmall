@@ -30,11 +30,13 @@
 
 
         <tr th:each="book : ${books}">
-            <div th:each="extension : ${imageExtensions}">
-                <img th:src="@{'/files/' + ${book.id} + '.' + ${extension}}"/>
-            </div>
+
+<!--            <div th:each="extension : ${imageExtensions}">-->
+<!--                <img th:src="@{'/files/' + ${book.id} + '.' + ${extension}}"/>-->
+<!--            </div>-->
 
             <div class="col-md-4">
+                <img th:src="@{${book.getImage_path()}}" style="width: 240px; height: 300px;">
                 <h3 th:text="${book.title}"></h3>
                 <p th:text="${book.author}"></p>
                 <br th:text="${book.publisher}+' | ' +${book.release_date}">

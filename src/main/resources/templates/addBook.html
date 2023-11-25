@@ -10,10 +10,7 @@
 <div th:replace="~{fragments/common :: header}"/>
 <div th:replace="~{fragments/common :: heading}"/>
 
-<div class="float-end">
-    <a th:href="@{/books/add(lang='en')}">English</a>
-    <a th:href="@{/books/add(lang='ko')}">Korean</a>
-</div>
+
 
 <!--<div class="p-5 mb-4 bg-body-tertiary">-->
 <!--    <div class="container">-->
@@ -24,6 +21,10 @@
 
 
 <div class="container">
+    <div class="float-start">
+        <a th:href="@{/books/add(lang='en')}">English</a>
+        <a th:href="@{/books/add(lang='ko')}">Korean</a>
+    </div>
     <!--커맨드 객체를 NewBook으로 수정-->
     <!--    <form:form modelAttribute="NewBook" class="form-horizontal">-->
     <!--1.    -->

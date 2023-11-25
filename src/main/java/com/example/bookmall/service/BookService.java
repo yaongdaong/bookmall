@@ -44,30 +44,42 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
-    public Book updateBook(Long id, Book updatedBook,MultipartFile file) throws IOException {
+    public Book updateBook(Long id, Book updatedBook, MultipartFile file) throws IOException {
         Optional<Book> bookTemp = bookRepository.findById(id);
         if (bookTemp.isPresent()) {
             Book book = bookTemp.get();
 
-            if(file!= null&& !file.isEmpty()){
-                imageService.deleteImage(book.getImage_name());
-                String newFileName = imageService.saveImage(file);
-                book.setImage_name(newFileName);
-                book.setImage_path("/files/"+newFileName);
+            // Debugging: Check if the file is received and not empty
+            System.out.println("Received file: " + file.getOriginalFilename());
+
+            // Debugging: Log the existing image name before deletion
+            System.out.println("Existing image name: " + book.getImage_name());
+
+            // Delete existing image if the name is not null
+            if (book.getImage_name() != null) {
+                // Debugging: Check if the file is being deleted
+                try {
+                    imageService.deleteImage(book.getImage_name());
+                    System.out.println("Image deletion successful: " + book.getImage_name());
+                } catch (Exception e) {
+                    System.out.println("Image deletion error: " + e.getMessage());
+                }
+            } else {
+                System.out.println("No existing image to delete");
             }
+
+            // Debugging: Check if the file is being saved
+            String newFileName = imageService.saveImage(file);
+            System.out.println("New image name: " + newFileName);
+
+            // Update book properties
+            book.setImage_name(newFileName);
+            book.setImage_path("/files/" + newFileName);
+
+            // Update other book properties
             book.setIsbn(updatedBook.getIsbn());
             book.setTitle(updatedBook.getTitle());
-            book.setUnit_price(updatedBook.getUnit_price());
-            book.setAuthor(updatedBook.getAuthor());
-            book.setDescription(updatedBook.getDescription());
-            book.setPublisher(updatedBook.getPublisher());
-            book.setCategory(updatedBook.getCategory());
-            book.setUnits_in_stock(updatedBook.getUnits_in_stock());
-
-            book.setRelease_date(updatedBook.getRelease_date());
-            book.setB_condition(updatedBook.getB_condition());
-            book.setImage_name(updatedBook.getImage_name());
-            book.setImage_path(updatedBook.getImage_path());
+            // ... (update other properties)
 
             return bookRepository.save(book);
         }

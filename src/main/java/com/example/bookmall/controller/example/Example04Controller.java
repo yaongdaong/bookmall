@@ -46,10 +46,10 @@ public class Example04Controller {
     //     return "login";
     // }
 
-    @GetMapping("/admin")
-    public String requestMethod2(Model model){
-        return "webpage08_04";
-    }
+    //@GetMapping("/admin")
+    //public String requestMethod2(Model model){
+    //    return "webpage08_04";
+    //}
 
     // @GetMapping("/logout")
     // public String logout(Model model){

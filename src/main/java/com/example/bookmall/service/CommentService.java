@@ -29,4 +29,14 @@
          return commentRepository.findByBookId(bookId);
      }
 
+     public Comment updateComment(Long commentId, String newContent){
+         Comment comment = commentRepository.findById(commentId)
+         .orElseThrow(() -> new RuntimeException("댓글을 찾을 수 없습니다."));
+         comment.setContent(newContent);
+         return commentRepository.save(comment);
+     }
+
+     public void deleteComment(Long id){
+         commentRepository.deleteById(id);
+     }
  }

@@ -4,11 +4,15 @@ import com.example.bookmall.domain.User;
 import com.example.bookmall.repository.UserRepository;
 import com.example.bookmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -67,8 +71,11 @@ public class UserController {
     }
 
 
-    @GetMapping("/users")
-    public String listUsers(Model model) {
+    @GetMapping("/admin")
+    //@Secured("ADMIN")
+    public String listUsers(Model model, Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        model.addAttribute("authorities",authorities);
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         model.addAttribute("heading", "회원 목록");

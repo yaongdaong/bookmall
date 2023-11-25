@@ -46,4 +46,20 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    //@Bean
+    //public UserDetailsService userDetailsService(){
+    //    UserDetails user = User.withDefaultPasswordEncoder()
+    //            .username("user")
+    //            .password("password")
+    //            .roles("USER")
+    //            .build();
+    //
+    //    UserDetails admin = User.withDefaultPasswordEncoder()
+    //            .username("admin")
+    //            .password("password")
+    //            .roles("ADMIN")
+    //            .build();
+    //    return new InMemoryUserDetailsManager(user, admin);
+    //}
 }

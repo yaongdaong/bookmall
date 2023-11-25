@@ -36,7 +36,7 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
-    @OneToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    //@OneToOne
+    //@JoinColumn(name = "cart_id")
+    //private Cart cart;
 }

@@ -8,14 +8,28 @@
 <body>
 
 <div th:replace="~{fragments/common :: header}"/>
+
+<style>
+        body {
+            /* 배경 이미지 경로를 Thymeleaf로 설정 */
+            background-image: url(/images/books-1803853_1280.jpg);
+            /* 기타 배경 스타일링 속성들 */
+            background-size: cover;
+            background-repeat: no-repeat;
+            /* 기타 스타일 속성들 */
+        }
+
+        /* 추가적인 스타일링이 필요한 경우 여기에 추가 */
+    </style>
 <div th:replace="~{fragments/common :: heading}"/>
 
 
-<div class="container">
-    <div class="text-center">
-        <h3 th:text="${subheading}"></h3>
-    </div>
-</div>
+<!--<div class="container">-->
+<!--    <div class="text-center">-->
+<!--        <h3 th:text="${subheading}"></h3>-->
+<!--    </div>-->
+<!--</div>-->
+
 
 <div th:replace="~{fragments/common :: footer}"/>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>

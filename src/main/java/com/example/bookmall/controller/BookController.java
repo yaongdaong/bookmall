@@ -47,6 +47,8 @@ public class BookController {
         Book book = new Book(); // 또는 적절한 방식으로 Book 객체를 가져오세요
         model.addAttribute("book", book);
         System.out.println("book");
+        model.addAttribute("heading", "도서 등록");
+        model.addAttribute("subheading", "Add Book");
         return "addBook";
     }
 
@@ -60,6 +62,7 @@ public class BookController {
     @GetMapping("/{id}")
     public String getBookById(@PathVariable Long id, Model model, Principal principal) {
         String username = principal.getName();
+        model.addAttribute("authenticatedUsername", username);
         //String username = userDetails != null ? userDetails.getUsername() : null;
         //model.addAttribute("username",username);
         System.out.println("username:"+username);
@@ -70,7 +73,8 @@ public class BookController {
         model.addAttribute("comments", comments);
         String[] imageExtensions = {"jpeg", "png", "jpg"};
         model.addAttribute("imageExtensions", imageExtensions);
-
+        model.addAttribute("heading", "도서 상세 정보");
+        model.addAttribute("subheading", "Book Details");
         return "book";
     }
 
@@ -80,7 +84,7 @@ public class BookController {
             @RequestParam(name = "keyword", required = false) String keyword,
             Model model
     ) {
-        int pageSize = 10; // 페이지 당 아이템 수
+        int pageSize = 12; // 페이지 당 아이템 수
         Pageable pageable = PageRequest.of(page, pageSize); // 페이지네이션 설정
 
         Page<Book> books;
