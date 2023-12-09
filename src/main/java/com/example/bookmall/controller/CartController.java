@@ -45,6 +45,7 @@ public class CartController {
         String username = principal.getName();
         Optional<User> user = userService.findByUsername(username);
         List<CartItem> items = cartService.getCartItemsByUser(user);
+
         int totalPrice = 0;
         for (CartItem cartItem : items) {
             totalPrice += cartItem.getBook().getUnit_price() * cartItem.getQuantity();
@@ -53,6 +54,7 @@ public class CartController {
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("heading", "장바구니");
         model.addAttribute("subheading", "Your Cart");
+        //System.out.println("items"+items);
         return "cart";
     }
 

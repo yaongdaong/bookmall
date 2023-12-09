@@ -12,7 +12,59 @@
 <div th:replace="~{fragments/common :: header}"/>
 <div th:replace="~{fragments/common :: heading}"/>
 
+<!--배송지-->
+<div class="container text-center">
+  <table class="table subjectTable">
+    <thead>
+    <tr>
+      <th>이름</th>
+      <th>연락처</th>
+      <th>주소</th>
+      <th>배송메모</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cartItem : ${items}" class="cart_info" th:data-book-id="${cartItem.book.id}" th:data-cart-id="${cartItem.cart.id}">
+      <td th:text="${}"><button class="quantity_modify_btn">변경</button></td>
+      <td th:text="${}"/>
+      <td th:text="${}"/>
+      <td th:text="${}"/>
+      <td>
+      <div class="input-group mb-3">
+<!--        <label class="input-group-text" for="inputGroupSelect01">Options</label>-->
+        <select class="form-select" id="inputGroupSelect01">
+          <option selected>배송 메모를 선택해주세요.</option>
+          <option value="1">문 앞에 놓아주세요.</option>
+          <option value="2">배송 전 미리 연락해 주세요.</option>
+          <option value="3">부재 시 연락 부탁드려요.</option>
+        </select>
+      </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
+<!--주문자-->
+<div class="container text-center">
+  <table class="table subjectTable">
+    <thead>
+    <tr>
+      <th>이름</th>
+      <th>연락처</th>
+      <th>이메일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cartItem : ${items}" class="cart_info" th:data-book-id="${cartItem.book.id}" th:data-cart-id="${cartItem.cart.id}">
+      <td th:text="${}"><button class="quantity_modify_btn">변경</button></td>
+      <td th:text="${}"/>
+      <td th:text="${}"/>
+      <td th:text="${}"/>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
 <div th:replace="~{fragments/common :: footer}"/>
 </body>

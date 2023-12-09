@@ -142,6 +142,13 @@ public class CartService {
         //}
     }
 
+    public void clearCart(User user){
+        Cart cart = getCartByUser(user);
+        if (cart != null){
+            cart.getCartItems().clear();
+            cartRepository.save(cart);
+        }
+    }
     //@Transactional
     //public Cart downCart(Long cartId){
     //    Cart cart = cartRepository.findById(cartId).orElseThrow(()->{
