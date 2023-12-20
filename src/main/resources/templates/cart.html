@@ -62,9 +62,13 @@
     </table>
     <p>Total Price: <span id="totalPriceDisplay">0</span>원</p>
     <p>Total Count: <span id="totalQuantityDisplay">0</span>권</p>
-    <form th:action="@{'/order/fromCart' + ${cartItem.cart.id}}" method="post">
-        <input type="hidden" name="userId" th:value="*{user.id}">
-        <button type="button" class="btn btn-danger ml-auto">주문하기</button>
+    <form th:action="@{'/order/fromCart'}" method="post">
+        <input type="hidden" th:name="bookIds" th:each="cartItem : ${items}" th:value="${cartItem.book.id}">
+        <input type="hidden" th:name="user" th:each="cartItem : ${items}" th:value="${cartItem.cart.user.id}">
+        <input type="hidden" th:name="quantities" th:each="cartItem : ${items}" th:value="${cartItem.quantity}">
+        <input type="hidden" th:name="unitPrices" th:each="cartItem : ${items}" th:value="${cartItem.book.unit_price}">
+<!--        <input type="hidden" name="userId" th:value="*{user.id}">-->
+        <button type="submit" class="btn btn-danger ml-auto">주문하기</button>
     </form>
 
 </div>

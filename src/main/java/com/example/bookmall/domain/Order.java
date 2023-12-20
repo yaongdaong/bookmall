@@ -33,12 +33,23 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    public void addOrderItem(OrderItem orderItem){
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
     private LocalDateTime order_date;
+    private LocalDateTime reg_time;
+    private LocalDateTime update_time;
+
 
     @Enumerated(EnumType.STRING)
     private OrderStatus order_status;
-
-    private LocalDateTime reg_time;
-    private LocalDateTime update_time;
+    public void cancelOrder(){
+        setOrder_status(OrderStatus.CANCELED);
+    }
+    public void setOrderStatus(){
+        this.order_status = OrderStatus.CANCELED;
+    }
 
 }

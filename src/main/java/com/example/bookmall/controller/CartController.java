@@ -45,7 +45,7 @@ public class CartController {
         String username = principal.getName();
         Optional<User> user = userService.findByUsername(username);
         List<CartItem> items = cartService.getCartItemsByUser(user);
-
+        System.out.println("items"+items);
         int totalPrice = 0;
         for (CartItem cartItem : items) {
             totalPrice += cartItem.getBook().getUnit_price() * cartItem.getQuantity();

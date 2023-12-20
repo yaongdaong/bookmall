@@ -3,12 +3,14 @@ package com.example.bookmall.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Entity
 @Data
 @NoArgsConstructor
+
 @Table(name = "cartitem")
 public class CartItem {
     @Id
@@ -30,4 +32,11 @@ public class CartItem {
         this.book = book;
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return "CartItem{id=" + id + ", quantity=" + quantity + "}";
+    }
+
+
 }
