@@ -52,13 +52,13 @@
              Long bookId = entry.getKey();
              Integer quantity = entry.getValue();
 
-             //Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
+             Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
 
              OrderItem orderItem = new OrderItem();
-             //orderItem.setBook(book);
-             //orderItem.setQuantity(quantity);
-             //orderItem.setOrder(order);
-             //order.getOrderItems().add(orderItem);
+             orderItem.setBook(book);
+             orderItem.setQuantity(quantity);
+             orderItem.setOrder(order);
+             order.getOrderItems().add(orderItem);
          }
          order.setOrder_date(LocalDateTime.now());
          return orderRepository.save(order);

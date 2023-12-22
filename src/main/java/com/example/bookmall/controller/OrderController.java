@@ -63,18 +63,8 @@ public class OrderController {
         for (int i = 0; i < bookIds.size(); i++) {
             cartItems.put(bookIds.get(i), quantities.get(1));
         }
-        //Optional<User> userOptional = userService.getUserById(userId);
-
-        //if (userOptional.isPresent()) {
-        //    User user = userOptional.get();
-        //    List<CartItem> cartItems = cartService.getCartItemsByUser(userOptional);
         Order order = orderService.createOrderFromCart(user, cartItems);
-        //cartService.clearCart(userOptional.get());
         return "redirect:/order";
-        //return "redirect:/order/confirmation/" + order.getId();
-        //} else {
-        //    return "redirect:/error";
-        //}
 
     }
 
