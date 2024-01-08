@@ -61,7 +61,7 @@ public class OrderController {
     public String cartOrder(@RequestParam("user") User user, @RequestParam("bookIds") List<Long> bookIds, @RequestParam("quantities") List<Integer> quantities) {
         Map<Long, Integer> cartItems = new HashMap<>();
         for (int i = 0; i < bookIds.size(); i++) {
-            cartItems.put(bookIds.get(i), quantities.get(1));
+            cartItems.put(bookIds.get(i), quantities.get(i));
         }
         Order order = orderService.createOrderFromCart(user, cartItems);
         return "redirect:/order";

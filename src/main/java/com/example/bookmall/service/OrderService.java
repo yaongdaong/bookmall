@@ -7,6 +7,7 @@
  import org.springframework.stereotype.Service;
 
  import java.time.LocalDateTime;
+ import java.util.ArrayList;
  import java.util.List;
  import java.util.Map;
 
@@ -15,7 +16,8 @@
 
      @Autowired
      private OrderRepository orderRepository;
-
+@Autowired
+private BookService bookService;
      @Autowired
      private BookRepository bookRepository;
 
@@ -44,23 +46,42 @@
          return orderRepository.save(order);
      }
 
+     //public Order createOrderFromCart(User user,List<CartItem> cartItems) {
      public Order createOrderFromCart(User user,Map<Long, Integer> cartItems) {
          Order order = new Order();
          order.setUser(user);
-
+         List<OrderItem> orderItems = new ArrayList<>();
          for (Map.Entry<Long, Integer> entry : cartItems.entrySet()) {
              Long bookId = entry.getKey();
              Integer quantity = entry.getValue();
 
-             Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
+             // Assuming you have a method to retrieve a Book entity by its ID
+             Book book = bookService.getBookById(bookId);
 
-             OrderItem orderItem = new OrderItem();
-             orderItem.setBook(book);
-             orderItem.setQuantity(quantity);
-             orderItem.setOrder(order);
-             order.getOrderItems().add(orderItem);
+             OrderItem orderItem = OrderItem.createOrderItem(book, quantity);
+             orderItems.add(orderItem);
          }
-         order.setOrder_date(LocalDateTime.now());
-         return orderRepository.save(order);
+
+         //for (CartItem cartitem: cartItems){
+         //    OrderItem orderItem = OrderItem.createOrderItem(cartitem.getBook(),cartitem.getQuantity());
+         //    orderItems.add(orderItem);
+         //}
+         Order newOrder = Order.createOrder(user, orderItems);
+         newOrder.setPrice(newOrder.getTotalPrice());
+         return orderRepository.save(newOrder);
+         //for (Map.Entry<Long, Integer> entry : cartItems.entrySet()) {
+         //    Long bookId = entry.getKey();
+         //    Integer quantity = entry.getValue();
+         //
+         //    Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
+         //
+         //    OrderItem orderItem = new OrderItem();
+         //    orderItem.setBook(book);
+         //    orderItem.setQuantity(quantity);
+         //    orderItem.setOrder(order);
+         //    order.getOrderItems().add(orderItem);
+         //}
+         //order.setOrder_date(LocalDateTime.now());
+         //return orderRepository.save(order);
      }
  }

@@ -20,7 +20,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -28,6 +28,13 @@ public class OrderItem {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    public static OrderItem createOrderItem(Book book, int quantity){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setBook(book);
+        orderItem.setQuantity(quantity);
+        orderItem.setOrder_price(book.getUnit_price());
+        return orderItem;
+    }
 
     private int order_price;
 

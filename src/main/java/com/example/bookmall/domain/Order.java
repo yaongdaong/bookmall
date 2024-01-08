@@ -23,6 +23,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int price;
+    // 사용자와 연결
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -36,6 +38,26 @@ public class Order {
     public void addOrderItem(OrderItem orderItem){
         orderItems.add(orderItem);
         orderItem.setOrder(this);
+    }
+
+
+    public static Order createOrder(User user, List<OrderItem> orderItemList){
+        Order order = new Order();
+        order.setUser(user);
+        for (OrderItem orderItem : orderItemList){
+            order.addOrderItem(orderItem);
+        }
+        order.setOrder_status(OrderStatus.ORDER_RECEIVED);
+        order.setOrder_date(LocalDateTime.now());
+        return order;
+    }
+
+    public int getTotalPrice(){
+        int totalPrice = 0;
+        for(OrderItem orderItem : orderItems){
+            totalPrice += (orderItem.getOrder_price() * orderItem.getQuantity());
+        }
+        return totalPrice;
     }
 
     private LocalDateTime order_date;
