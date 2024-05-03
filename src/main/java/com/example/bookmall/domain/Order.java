@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @Table(name = "orders")
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

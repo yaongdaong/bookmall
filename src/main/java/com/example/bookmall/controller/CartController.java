@@ -70,7 +70,8 @@ public class CartController {
     }
 
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/updateQuantity/{id}")
+    //@PostMapping("/update/{id}")
     @ResponseBody
     public String modifyQuantity(@PathVariable Long id,@RequestParam Long bookId, @RequestParam int quantity){
         Optional<Cart> cartOptional = cartRepository.findById(id);
@@ -84,6 +85,7 @@ public class CartController {
             return "error";
         }
     }
+
 
     //Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found for id: "+id));
         //

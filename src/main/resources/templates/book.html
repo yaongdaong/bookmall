@@ -89,9 +89,9 @@
             <tbody id="commentTableBody">
             <tr th:each="comment : ${comments}" th:data-comment-id="${comment.id}">
                 <td th:text="${comment.id}"></td>
-                <td contenteditable="true" class="editable-comment" th:text="${comment.content}" th:data-comment-content="${comment.content}"></td>
+                <td class="editable-comment" th:text="${comment.content}" th:data-comment-content="${comment.content}"></td>
                 <td th:text="${comment.user.username}"></td>
-                <td th:text="${comment.createdAt}"></td>
+                <td class="date" th:text="${comment.createdAt}"></td>
                 <td>
                     <button th:if="${#authentication.principal.username} == ${comment.user.username}" type="button" class="btn btn-primary updateComment">댓글수정</button>
                 </td>
@@ -184,56 +184,30 @@ function getCommentsAndRenderList(bookId) {
 }
 
 <!--댓글 수정-->
-<!--$(document).on("click", ".updateComment", function() {-->
-<!--    var row = $(this).closest("tr");-->
-<!--    var commentId = row.data("comment-id");-->
-<!--    var updatedContent = row.find(".editable-comment").html();-->
-<!--    console.log("updatedContent",updatedContent);-->
-<!--    $.ajax({-->
-<!--        type: "POST",-->
-<!--        url: "/comment/update/" + commentId,-->
-<!--        data: JSON.stringify({ content: updatedContent }),-->
-<!--        success: function(updatedComment) {-->
-<!--            console.log("댓글 수정 완료:", updatedComment);-->
-<!--            getCommentsAndRenderList($("#id").val());-->
-<!--        },-->
-<!--        error: function(error) {-->
-<!--            console.error("댓글 수정 에러:", error);-->
-<!--        }-->
-<!--    });-->
-<!--});-->
-
-$(".updateComment").on("click", function(e) {
-    console.log("댓업 버튼 클릭됨");
-    updateComment($(this).closest("tr"));
-});
-
-function updateComment(row) {
-    console.log("댓업중");
-    var commentId = row.data("comment-id");
-    console.log("업데이트댓글아이디"+commentId);
-
-
-    var updatedContent = row.find("comment-content").val();
-<!--    var updatedContent = row.find(".editable-comment").text();-->
-    console.log("updatedContent",updatedContent);
-<!--    var updatedContent = prompt("댓글 내용을 수정하세요:", row.find("td:eq(1)").text());-->
-
-    if (updatedContent !== null) {
+$(document).ready(function(){
+    $(".updateComment").click(function(){
+        var $commentCell = $(this).closest("tr").find(".editable-comment");
+        var originalContent = $commentCell.text().trim();
+        $commentCell.html('<textarea class="form-control edited-comment">'+originalContent+'</textarea><button class="btn btn-primary saveComment">저장</button>');
+    });
+    $(document).on("click",".saveComment",function(){
+        var $commentCell = $(this).closest("tr").find(".editable-comment");
+        var editedContent = $commentCell.find(".edited-comment").val().trim();
+        var commentId = $(this).closest("tr").data("comment-id");
         $.ajax({
             type: "POST",
-            url: "/comment/update/" + commentId,
-            data : JSON.stringify({ content: updatedContent }),
-            success: function(updatedComment) {
-                console.log("댓글 수정 완료:", updatedComment);
-                getCommentsAndRenderList($("#id").val());
+            url: "/comment/update/"+commentId,
+            data: {content: editedContent},
+            success: function(response){
+                $commentCell.text(editedContent);
+                $(this).closest("tr").find(".date").text(response.createdAt);
             },
-            error: function (error) {
-                console.error("댓글 수정 에러:", error);
+            error: function(xhr, status, error){
+                console.error(xhr.responseText);
             }
         });
-    }
-}
+    });
+});
 
 <!--댓글 삭제-->
 $(".deleteComment").on("click", function(e) {

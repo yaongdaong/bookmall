@@ -45,57 +45,57 @@
 
 
         <!--<?xml version="1.0" encoding="UTF-8"?>-->
-<!--<Configuration status="INFO">-->
-<!--    <Appenders>-->
-<!--        <Console name="Console" target="SYSTEM_OUT">-->
-<!--            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
-<!--        </Console>-->
-<!--    </Appenders>-->
-<!--    <Loggers>-->
-<!--        <Root level="INFO">-->
-<!--            <AppenderRef ref="Console"/>-->
-<!--        </Root>-->
-<!--    </Loggers>-->
-<!--</Configuration>-->
+        <!--<Configuration status="INFO">-->
+        <!--    <Appenders>-->
+        <!--        <Console name="Console" target="SYSTEM_OUT">-->
+        <!--            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
+        <!--        </Console>-->
+        <!--    </Appenders>-->
+        <!--    <Loggers>-->
+        <!--        <Root level="INFO">-->
+        <!--            <AppenderRef ref="Console"/>-->
+        <!--        </Root>-->
+        <!--    </Loggers>-->
+        <!--</Configuration>-->
 
-<!--&lt;!&ndash;Appenders&ndash;&gt;-->
-<!--<appender name="console" class="org.apache.log4j.ConsoleAppender">-->
-<!--<param name="Target" value="System.out"/>-->
-<!--<layout class="org.apache.log4j.PatternLayout">-->
-<!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
-<!--</layout>-->
-<!--</appender>-->
+        <!--&lt;!&ndash;Appenders&ndash;&gt;-->
+        <!--<appender name="console" class="org.apache.log4j.ConsoleAppender">-->
+        <!--<param name="Target" value="System.out"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+        <!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
+        <!--</layout>-->
+        <!--</appender>-->
 
-<!--&lt;!&ndash;파일에 출력하기&ndash;&gt;-->
-<!--<appender name="monitor" class="org.apache.log4j.RollingFileAppender">-->
-<!--<param name="append" value="false"/>-->
-<!--<param name="maxFileSize" value="10KB"/>-->
-<!--<param name="maxBackupIndex" value="5"/>-->
-<!--<param name="file" value="c:/logs/monitor.log"/>-->
-<!--<layout class="org.apache.log4j.PatternLayout">-->
-<!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
-<!--</layout>-->
-<!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
-<!--    <param name="LavelMin" value="info"/>-->
-<!--    <param name="LavelMax" value="info"/>-->
-<!--</filter>-->
-<!--</appender>-->
-<!--&lt;!&ndash;Application Loggers&ndash;&gt;-->
-<!--<logger name="com.springmvc">-->
-<!--<level value="info"/>-->
-<!--<appender-ref ref="monitor"/>-->
-<!--</logger>-->
+        <!--&lt;!&ndash;파일에 출력하기&ndash;&gt;-->
+        <!--<appender name="monitor" class="org.apache.log4j.RollingFileAppender">-->
+        <!--<param name="append" value="false"/>-->
+        <!--<param name="maxFileSize" value="10KB"/>-->
+        <!--<param name="maxBackupIndex" value="5"/>-->
+        <!--<param name="file" value="c:/logs/monitor.log"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+        <!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
+        <!--</layout>-->
+        <!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+        <!--    <param name="LavelMin" value="info"/>-->
+        <!--    <param name="LavelMax" value="info"/>-->
+        <!--</filter>-->
+        <!--</appender>-->
+        <!--&lt;!&ndash;Application Loggers&ndash;&gt;-->
+        <!--<logger name="com.springmvc">-->
+        <!--<level value="info"/>-->
+        <!--<appender-ref ref="monitor"/>-->
+        <!--</logger>-->
 
-<!--<appender name="audit" class="org.apache.log4j.RollingFileAppender">-->
-<!--<param name="append" value="false"/>-->
-<!--<param name="maxFileSize" value="10KB"/>-->
-<!--<param name="maxBackupIndex" value="5"/>-->
-<!--<param name="file" value="c:/logs/audit.log"/>-->
-<!--<layout class="org.apache.log4j.PatternLayout">-->
-<!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
-<!--</layout>-->
-<!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
-<!--    <param name="LevelMin" value="warn"/>-->
-<!--    <param name="LevelMax" value="warn"/>-->
-<!--</filter>-->
-<!--</appender>-->
+        <!--<appender name="audit" class="org.apache.log4j.RollingFileAppender">-->
+        <!--<param name="append" value="false"/>-->
+        <!--<param name="maxFileSize" value="10KB"/>-->
+        <!--<param name="maxBackupIndex" value="5"/>-->
+        <!--<param name="file" value="c:/logs/audit.log"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+        <!--    <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>-->
+        <!--</layout>-->
+        <!--<filter class="org.apache.log4j.varia.LevelRangeFilter">-->
+        <!--    <param name="LevelMin" value="warn"/>-->
+        <!--    <param name="LevelMax" value="warn"/>-->
+        <!--</filter>-->
+        <!--</appender>-->
